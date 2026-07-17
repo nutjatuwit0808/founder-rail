@@ -49,4 +49,4 @@ If the project has no `constitution.md`, copy the template from `${CLAUDE_PLUGIN
 
 ## Step 5 — Report
 
-Summarize in plain language, in the user's language, no jargon — don't say "ESLint", "linter", or "config"; say something like "กติกาคุณภาพโค้ดแบบเดียวกับที่บริษัทเทคโนโลยีขนาดใหญ่ใช้ ถูกติดตั้งและทดสอบแล้ว ทุกครั้งที่มีการแก้โค้ด ระบบจะตรวจให้อัตโนมัติ". End by pointing to the next step: `/founder-rail:idea`.
+Summarize in plain language, in the user's language, no jargon — don't say "ESLint", "linter", or "config"; say something like "The same code-quality rules big tech teams use are now installed and tested — every time code changes, the system checks it automatically." End by pointing to the next step: `/founder-rail:idea`.

@@ -4,3 +4,6 @@ build/
 coverage/
 *.log
 .DS_Store
+
+# Local docs / scratch — not tracked; any language allowed here
+docs/
