@@ -1,0 +1,19 @@
+{
+  "name": "founder-rail",
+  "version": "0.1.0",
+  "description": "Quality-gated, spec-driven development rails for non-technical founders. Real code standards enforced by shell hooks, plan-then-approve gates, TDD harness with fresh-context review, and a zero-database markdown kanban.",
+  "author": {
+    "name": "nutjatuwit",
+    "email": "nutjatuwit@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "spec-driven",
+    "tdd",
+    "quality-gates",
+    "kanban",
+    "non-technical",
+    "founder"
+  ],
+  "hooks": "./hooks/hooks.json"
+}

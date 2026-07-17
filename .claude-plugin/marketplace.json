@@ -1,0 +1,14 @@
+{
+  "name": "founder-rail",
+  "owner": {
+    "name": "nutjatuwit",
+    "email": "nutjatuwit@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "founder-rail",
+      "source": "./",
+      "description": "Quality-gated, spec-driven development rails for non-technical founders. Standards + design setup, plan-approval gates, TDD harness, fresh-context review, visual verification, and a markdown-only kanban."
+    }
+  ]
+}
