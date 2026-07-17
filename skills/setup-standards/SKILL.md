@@ -1,6 +1,6 @@
 ---
 name: setup-standards
-description: One-time setup of real code-quality standards for a project, without asking the user a single technical question. Use when /founder-rail:start runs, when a project has no constitution.md, or when the user asks to set up the project or code standards. Generates working ESLint + Prettier config from a public style-guide preset and records the result in constitution.md.
+description: One-time setup of real code-quality standards for a project, without asking the user a single technical question. Use when /founder-rail:start runs, when a project has no constitution.md, or when the user asks to set up the project or code standards. Picks a public style-guide preset from business questions, generates working lint/format config, and records the result in constitution.md.
 ---
 
 # Setup Standards
@@ -14,28 +14,33 @@ The user cannot (or does not want to) make technical decisions. Every question y
 
 ## Step 2 — Ask outcome questions (never technical)
 
-Use AskUserQuestion, in the user's language. At most these two:
+Use AskUserQuestion, in the user's language. Two questions, both about outcomes — the user never names a style guide:
 
-1. **Strictness** — "How should quality rules treat small style issues?"
+1. **Priority** — "What should the code style prioritize?" This chooses the preset:
+   - "Keep it simple and move fast — I don't want to fuss over formatting or lots of rules" → preset `standard-style` (one style, applied automatically, fewest decisions)
+   - "Follow the conventions most professional teams and future hires already know" → preset `airbnb-style` (industry-standard). Also note in `constitution.md` that the code must stay readable by strangers.
+   - "Catch as many mistakes as possible — I'd rather the rules be strict" → preset `typescript-strict` (highest rigor, type-safety focused)
+2. **Strictness** — "How should quality rules treat small style issues?"
    - "Strict, like a big company team — everything gets fixed before moving on" → `strict`
    - "Flexible, like an early MVP — serious problems still block, small style issues are just noted" → `flexible`
-2. **Future hands** — "Who do you expect will work on this code within a year?"
-   - "Mostly AI and me" → default naming/documentation rules
-   - "Freelancers or a real team eventually" → keep documentation and naming rules at `error`; note in constitution.md that the code must be readable by strangers.
 
-**Forbidden:** asking the user to pick a style guide, linter, formatter, library, framework, or any named technology. If they volunteer one, respect it; never ask.
+**Forbidden:** asking the user to pick a style guide, linter, formatter, library, framework, or any named technology by name. If they volunteer one, respect it (map it to the closest preset); never ask.
 
-## Step 3 — Apply the preset
+## Step 3 — Apply the chosen preset
 
-v1 ships one preset: `${CLAUDE_PLUGIN_ROOT}/standards/airbnb-style/` (Airbnb JavaScript/React style guide, adapted for TypeScript, flat-config).
+Presets live in `${CLAUDE_PLUGIN_ROOT}/standards/<preset>/`. All are TypeScript + React, ESLint 9 flat-config:
 
-1. Copy into the project root:
-   - `eslint.config.mjs`
-   - `.prettierrc.json`
+| Preset | Based on (public) | Formats with |
+|--------|-------------------|--------------|
+| `airbnb-style` | Airbnb JavaScript/React style guide | Prettier |
+| `standard-style` | JavaScript Standard Style (via neostandard) | ESLint itself — no Prettier |
+| `typescript-strict` | typescript-eslint `strict` config | Prettier |
+
+1. Copy **every config file the preset lists under "Files in this preset"** in its `STANDARDS.md` into the project root. That is `eslint.config.mjs` for every preset, plus `.prettierrc.json` for all presets **except** `standard-style` (which formats via ESLint and ships no Prettier config).
 2. Apply the strictness answer:
    - `strict`: leave the config exactly as shipped.
-   - `flexible`: downgrade the rules listed under "Flexible-mode downgrades" in the preset's `STANDARDS.md` from `error` to `warn`.
-3. Install the dev dependencies listed in the preset's `install.md`, using the project's package manager (default npm). Create a minimal `package.json` first if none exists.
+   - `flexible`: downgrade the rules listed under "Flexible-mode downgrades" in the preset's `STANDARDS.md` from `error` to `warn` (marked `[flexible: warn]` in `eslint.config.mjs`).
+3. Install the dev dependencies from the preset's `install.md`, using the project's package manager (default npm). Create a minimal `package.json` first if none exists. Do **not** install Prettier for `standard-style`.
 4. **Verify before declaring done:** run lint against a real or sample source file (e.g. `npx eslint --no-error-on-unmatched-pattern src/`) and confirm it executes without configuration errors. Setup is not complete until lint actually runs.
 
 ## Step 4 — Write constitution.md

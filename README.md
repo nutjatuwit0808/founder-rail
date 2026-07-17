@@ -4,7 +4,7 @@ Quality-gated, spec-driven development for people who can't code — or can, but
 
 founder-rail is a Claude Code plugin that puts guard rails around AI-driven development from day one of a project:
 
-1. **Real code standards** — picked from public style guides (Airbnb-style for v1) based on 2–3 *business* questions, never technical ones. Generates working ESLint/Prettier config.
+1. **Real code standards** — picked from public style guides (Airbnb-style, Standard-style, or TypeScript-strict) based on 2 *business* questions, never technical ones. Generates working ESLint/Prettier config.
 2. **Design direction** — for frontend projects: choose a feeling (minimal / bold / playful), get real design tokens.
 3. **Spec-driven harness** — no code before an approved plan, strict RED→GREEN→REFACTOR TDD, fresh-context reviewer that never saw the implementation history, screenshot round-trip verification for UI.
 4. **Permanent product knowledge** — every feature lives in `features/<slug>/` as plain markdown: `SPEC.md`, `DECISIONS.md`, `STATUS.md`, `IMPLEMENTATION.md`.
@@ -37,6 +37,70 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 | `/founder-rail:status` | Kanban board derived from markdown — what's where |
 | `/founder-rail:ship` | Build the next planned feature through the full quality harness |
 
+## How the skills work
+
+Commands are thin entry points; each one invokes a **skill** that holds the real logic. Skills create markdown under `features/<slug>/`, and the build harness delegates to **agents**. Shell **hooks** enforce the safety rules at tool-call time, underneath everything.
+
+```mermaid
+flowchart TD
+    subgraph cmds[Commands]
+        start["/founder-rail:start"]
+        idea["/founder-rail:idea"]
+        status["/founder-rail:status"]
+        ship["/founder-rail:ship"]
+    end
+
+    start --> setupStd[setup-standards]
+    setupStd -->|frontend project?| setupDsn[setup-design]
+
+    idea --> ideaSpec[idea-to-spec]
+    ideaSpec --> feat[("features/&lt;slug&gt;/<br/>SPEC · STATUS · DECISIONS · IMPLEMENTATION")]
+
+    status --> dash[render-dashboard]
+    dash -. reads live .-> feat
+
+    ship -->|nothing planned yet| plan[plan-sprint]
+    plan --> impl
+    ship --> impl[implement-tdd harness]
+    impl --> implementer([implementer agent])
+    impl --> reviewer([fresh-reviewer agent])
+    impl --> vis[verify-visually]
+    impl -. updates .-> feat
+
+    subgraph hooks[Hooks — enforced on every tool call]
+        h1[secret-scan]
+        h2[eslint-on-save]
+        h3[pre-commit-test-gate]
+        h4[push-safety]
+    end
+```
+
+### The build harness (`implement-tdd`) in detail
+
+`/founder-rail:ship` runs one feature through seven phases that cannot be skipped:
+
+```mermaid
+flowchart LR
+    p0[0 · Plan gate<br/>plain-language approval] --> p1[1 · Isolate<br/>git worktree]
+    p1 --> p2[2 · RED<br/>failing tests first]
+    p2 --> p3[3 · GREEN<br/>minimum code to pass]
+    p3 --> p4[4 · REFACTOR<br/>clean, stay green]
+    p4 --> p5[5 · Fresh review<br/>diff + spec only]
+    p5 -->|changes requested| p3
+    p5 -->|APPROVE| p6[6 · Verify<br/>full suite + screenshots]
+    p6 --> p7[7 · Record & report<br/>plain-language result]
+```
+
+### What each skill does
+
+- **`setup-standards`** — one-time. Asks the user only *business* questions (how strict, who will maintain the code) and derives every technical choice itself. Copies the `airbnb-style` ESLint + Prettier preset into the project, installs dev dependencies, and verifies lint actually runs before declaring done. Writes section 1 of `constitution.md`.
+- **`setup-design`** — one-time, frontend only. Turns a chosen *feeling* (minimal / bold / playful) into real design tokens, and records the rule that all UI code must use tokens (no hard-coded colors, sizes, radii).
+- **`idea-to-spec`** — turns a plain-language idea (or an `inbox/` file) into a tracked feature. Asks at most 3 outcome-level questions (never about databases, frameworks, or architecture) and scaffolds `features/<slug>/` with `SPEC.md`, `STATUS.md`, `DECISIONS.md`, and `IMPLEMENTATION.md`. The slug names the *outcome* (`email-signup`), not the tech.
+- **`plan-sprint`** — groups `backlog` features into a simple sprint. Asks one outcome question about what matters most now, respects `blocked_by` order, caps a sprint at 5 items, and marks the chosen features `planned`. No story points or velocity.
+- **`implement-tdd`** — the build harness (diagram above). The only place implementation code is ever written: plan-approval gate → strict RED→GREEN→REFACTOR TDD → fresh-context review → verification → documentation update. Delegates larger builds to the `implementer` agent.
+- **`verify-visually`** — for features with a visible UI. Drives the app and captures screenshots via Playwright, checking them against the acceptance criteria and design tokens — proof the user can see without reading code. Part of the harness, not optional.
+- **`render-dashboard`** — the zero-database kanban. Re-reads `features/*/STATUS.md` frontmatter every time (never cached) and renders a text board — Backlog · Planned · In progress · In review · Done — plus one suggested next action.
+
 ## Repo structure
 
 ```
@@ -45,7 +109,7 @@ founder-rail/
 ├── skills/{setup-standards, setup-design, idea-to-spec, plan-sprint,
 │            implement-tdd, verify-visually, render-dashboard}/SKILL.md
 ├── agents/{implementer.md, fresh-reviewer.md}
-├── standards/airbnb-style/
+├── standards/{airbnb-style, standard-style, typescript-strict}/
 ├── hooks/{hooks.json, eslint-on-save.sh, pre-commit-test-gate.sh,
 │           secret-scan.sh, push-safety.sh}
 ├── commands/{start.md, idea.md, status.md, ship.md}
@@ -57,7 +121,7 @@ founder-rail/
 ## v1 scope
 
 - One stack: web app, React + TypeScript
-- One standards preset: Airbnb-style
+- Three standards presets: Airbnb-style, Standard-style (StandardJS via neostandard), TypeScript-strict
 - Dashboard is a text board in chat (HTML dashboard later)
 - Single user (no team/role modes)
 

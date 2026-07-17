@@ -76,7 +76,7 @@ Each feature in a user's project is a folder `features/<slug>/` (slug names the 
 
 ## v1 scope (keep changes inside these bounds)
 
-One stack (React + TypeScript web app), one standards preset (`standards/airbnb-style/`), dashboard is chat-text only (no HTML dashboard unless explicitly asked), single-user. Out of scope: multi-editor support, real-time server dashboards, compliance presets, team/role modes.
+One stack (React + TypeScript web app), three standards presets (`standards/{airbnb-style,standard-style,typescript-strict}/`, chosen from business questions in `setup-standards`), dashboard is chat-text only (no HTML dashboard unless explicitly asked), single-user. Out of scope: multi-editor support, real-time server dashboards, compliance presets, team/role modes.
 
 ## Contributing constraints
 
