@@ -66,7 +66,7 @@ If Tailwind is present, also map these variables into the Tailwind theme (v4 `@t
 
 ## Step 4 — Record in constitution.md
 
-Fill section 2 (Design): chosen direction + the user's answer, token file path, and the binding rule: **all UI code must use tokens — no hard-coded colors, sizes, or radii**. Note that `verify-visually` checks screenshots against these tokens.
+Fill section 3 (Design): chosen direction + the user's answer, token file path, and the binding rule: **all UI code must use tokens — no hard-coded colors, sizes, or radii**. Note that `verify-visually` checks screenshots against these tokens.
 
 ## Step 5 — Report
 

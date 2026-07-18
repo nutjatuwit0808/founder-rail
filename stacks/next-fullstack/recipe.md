@@ -12,7 +12,7 @@ Flags used: `--typescript` (TS project), `--app` (App Router), `--src-dir`, `--i
 
 ## 2. If the user's answers called for login or storing data
 
-Add Postgres + Prisma ⚠️ *this touches real infrastructure — flag it and get approval before running, per constitution.md §5 (plan-then-approve).*
+Add Postgres + Prisma ⚠️ *this touches real infrastructure — flag it and get approval before running, per constitution.md §6 (plan-then-approve).*
 
 ```
 npm install prisma @prisma/client
@@ -21,6 +21,12 @@ npx prisma init
 
 Wire the generated `DATABASE_URL` to whatever Postgres instance the user has (or ask them, in plain language, how they want to host it — that is a business/outcome question, not a technical one: "where should the app's data live — a hosting provider you already use, or should I suggest a free option to start?").
 
+Day-to-day schema changes use `npx prisma migrate dev` — the `db-danger-guard` hook allows it. Full resets and data-loss flags are blocked by that hook; if one is ever truly needed, the user runs it personally.
+
 ## 3. Backend logic
 
 Lives inside the Next.js app itself — App Router route handlers (`src/app/api/**/route.ts`) or server actions. No separate backend process.
+
+## 4. Health route (always, at scaffold time)
+
+Create `src/app/api/health/route.ts` returning HTTP 200 with `{ status: "ok", time: <ISO timestamp> }`. Deploy verification and `/founder-rail:checkup` ping this to tell "app down" from "network down" — it must exist before the first launch, so create it now.

@@ -34,10 +34,15 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 
 | Command | What it does |
 |---------|--------------|
-| `/founder-rail:start` | One-time setup: standards, design, project scaffolding |
-| `/founder-rail:idea` | Turn a plain-language idea into a tracked feature spec |
+| `/founder-rail:start` | One-time setup: stack, standards, design, structure, quality rails |
+| `/founder-rail:idea` | Turn a plain-language idea into a tracked feature spec (or update an existing feature) |
 | `/founder-rail:status` | Kanban board derived from markdown — what's where |
 | `/founder-rail:ship` | Build the next planned feature through the full quality harness |
+| `/founder-rail:preview` | Open the app locally — link + what to try |
+| `/founder-rail:fix` | Report something broken in plain words → reproduced, regression-tested fix |
+| `/founder-rail:launch` | Put the latest work on the real internet — pre-flight, ⚠️ approval, deploy, verify |
+| `/founder-rail:undo` | Walk back the most recent shipped feature safely (git revert, plain-language cost) |
+| `/founder-rail:checkup` | Monthly health report: vulnerabilities, tests, stale parts, production errors |
 
 ## How the skills work
 
@@ -50,7 +55,12 @@ flowchart TD
         idea["/founder-rail:idea"]
         status["/founder-rail:status"]
         ship["/founder-rail:ship"]
+        fix["/founder-rail:fix"]
+        launch["/founder-rail:launch"]
     end
+
+    fix --> fixBug[fix-bug: reproduce → regression test → fix]
+    launch --> deploySkill[setup-deploy / launch pre-flight]
 
     start --> setupTech[setup-techstack]
     setupTech --> setupStd[setup-standards]
@@ -77,6 +87,7 @@ flowchart TD
         h3[pre-commit-test-gate]
         h4[push-safety]
         h5[env-commit-guard]
+        h6[db-danger-guard]
     end
 ```
 
@@ -107,6 +118,10 @@ flowchart LR
 - **`implement-tdd`** — the build harness (diagram above). The only place implementation code is ever written: plan-approval gate → strict RED→GREEN→REFACTOR TDD → fresh-context review → verification → documentation update. Delegates larger builds to the `implementer` agent.
 - **`verify-visually`** — for features with a visible UI. Drives the app and captures screenshots via Playwright, checking them against the acceptance criteria and design tokens — proof the user can see without reading code. Part of the harness, not optional.
 - **`render-dashboard`** — the zero-database kanban. Re-reads `features/*/STATUS.md` frontmatter every time (never cached) and renders a text board — Backlog · Planned · In progress · In review · Done — plus one suggested next action.
+- **`fix-bug`** — plain-language bug report → reproduce first → failing regression test → fix → fresh review. Never guess-fixes an unreproduced bug; the regression test is permanent.
+- **`setup-deploy`** — first-launch setup. Host derived from the stack (`vercel-fullstack` / `railway-nest`); secret values never pass through the agent — the user enters them in the host dashboard following a plain-language guide.
+- **`undo-feature`** — walks back the most recent shipped feature with `git revert` only (history intact), after explaining the cost in plain language. Conflicts = stop and report, never resolve creatively.
+- **`health-check`** — read-only monthly report: vulnerabilities, tests, build, stale dependencies, stalled features, and (if launched) production health + recurring errors, which flow into `inbox/` as plain-language bug reports.
 
 ## Repo structure
 
@@ -114,18 +129,22 @@ flowchart LR
 founder-rail/
 ├── .claude-plugin/{plugin.json, marketplace.json}
 ├── skills/{setup-techstack, setup-standards, setup-design, setup-structure,
-│            idea-to-spec, plan-sprint, implement-tdd, verify-visually,
+│            setup-deploy, idea-to-spec, plan-sprint, implement-tdd, fix-bug,
+│            undo-feature, health-check, verify-visually,
 │            render-dashboard}/SKILL.md
 ├── agents/{implementer.md, fresh-reviewer.md}
 ├── stacks/{next-fullstack, next-nest}/
 ├── standards/{airbnb-style, standard-style, typescript-strict}/
 ├── structure/{flat, feature-based, atomic-design}/
 ├── security/baseline/       ← always-on, merged by setup-standards
+├── deploy/{vercel-fullstack, railway-nest}/
 ├── hooks/{hooks.json, eslint-on-save.sh, pre-commit-test-gate.sh,
-│           secret-scan.sh, push-safety.sh, env-commit-guard.sh}
-├── commands/{start.md, idea.md, status.md, ship.md}
+│           secret-scan.sh, push-safety.sh, env-commit-guard.sh,
+│           db-danger-guard.sh}
+├── commands/{start.md, idea.md, status.md, ship.md, preview.md, fix.md,
+│              launch.md, undo.md, checkup.md}
 ├── constitution.md          ← template, copied into the user's project
-├── inbox/                   ← raw untriaged ideas (in the user's project)
+├── inbox/                   ← raw untriaged ideas + production error reports
 └── features/<slug>/         ← per-feature knowledge (in the user's project)
 ```
 
@@ -134,10 +153,12 @@ founder-rail/
 - Two tech-stack presets: `next-fullstack` (default) and `next-nest`, both TypeScript
 - Three standards presets: Airbnb-style, Standard-style (StandardJS via neostandard), TypeScript-strict
 - Three structure presets: `flat`, `feature-based` (default), `atomic-design`
+- Two deploy presets: `vercel-fullstack`, `railway-nest` — secrets never pass through the agent
+- Two security levels: `baseline` (always on) and `sensitive-data` (PII/money apps)
 - Dashboard is a text board in chat (HTML dashboard later)
 - Single user (no team/role modes)
 
-Out of scope for v1: multi-editor support, real-time server dashboards, compliance presets (GDPR/HIPAA), team permissions, mobile stacks.
+Out of scope for v1: multi-editor support, real-time server dashboards, compliance presets (GDPR/HIPAA beyond the delete-my-data backlog item), team permissions, mobile stacks, integrated error-tracking SaaS.
 
 ## License
 

@@ -21,6 +21,13 @@ Use AskUserQuestion, in the user's language. Never say "Next.js", "NestJS", "API
 
 Any "yes" → preset `next-nest`. No "yes" to any → preset `next-fullstack`.
 
+Then two data-sensitivity questions (they set the security level, not the stack):
+
+4. "Will the app keep **customers' personal details** — names, emails, phone numbers, addresses?"
+5. "Will **money move through the app** — payments, subscriptions, refunds?"
+
+Any "yes" → security level `sensitive-data` (recorded in Step 5; see constitution §8). Both "no" → `baseline`.
+
 **Forbidden:** asking the user to name a framework, database, or architecture. If they volunteer one, respect it (map to the closest preset); never ask.
 
 ## Step 3 — Summarize and get approval
@@ -42,6 +49,8 @@ If the project has no `constitution.md`, copy the template from `${CLAUDE_PLUGIN
 - Preset chosen (`next-fullstack` or `next-nest`) + one-line plain-language reason tied to the user's answers
 - Whether a database was wired in, and where (`next-fullstack`: project root; `next-nest`: `apps/api` only)
 - Paths: app root(s), and for `next-nest`, the monorepo layout
+
+Also record the security level in section 8 (Secure coding): `baseline` or `sensitive-data`, quoting the answers that set it. If `sensitive-data`: create `features/delete-my-data/` right away (SPEC per `idea-to-spec` conventions — "a customer can ask for their personal data to be removed, and it actually is", status `backlog`) so the legal must-have exists on the board from day one.
 
 ## Step 6 — Report
 

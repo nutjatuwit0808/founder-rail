@@ -30,6 +30,10 @@ Written into `constitution.md` "Secure coding" section; checked by `fresh-review
 - API responses contain only the fields the feature needs — never whole DB objects
 - Passwords/tokens never appear in logs
 
+## The `sensitive-data` level (extension, not a separate preset)
+
+Set by `setup-techstack` from two outcome questions (does the app hold personal details? does money move through it?). It adds **no new blocking machine rules** — the stricter items (PII out of logs, response allowlists, integer money, audit-high blocking with a documented exception path, mandatory delete-my-data feature) live in constitution.md §8 and are judged by `fresh-reviewer`. Same reason as everything else here: those checks can't be automated without false alarms.
+
 ## Files in this preset
 
 - `eslint.security.mjs` — merged into the project's `eslint.config.mjs` by `setup-standards`

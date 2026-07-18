@@ -7,13 +7,24 @@ description: Turn a plain-language idea into a tracked feature spec under featur
 
 ## Input
 
-The user's words (command arguments or conversation), or a file from `inbox/`. If no idea was given and `inbox/` has files, list them by plain-language summary and ask which to triage.
+The user's words (command arguments or conversation), or a file from `inbox/`. If no idea was given and `inbox/` has files, list them by plain-language summary and ask which to triage. An inbox file with a `---` separator followed by raw log lines is a production error report from `/founder-rail:checkup` — route it to the `fix-bug` skill instead of writing a spec.
 
 ## Clarify — at most 3 questions, all outcome-level
 
 Allowed topics: who will use it, what success looks like, what is explicitly *not* needed, how it relates to existing features. **Forbidden:** databases, APIs, frameworks, architecture, hosting — the tech stack was already decided once, project-wide, by `setup-techstack`; a feature only *uses* it. Never re-litigate stack choices at spec time, and never ask the user.
 
-## Create the feature folder
+## Existing feature? Update it instead
+
+Before creating anything, check whether the idea is really a change to an existing `features/<slug>/` (read titles/SPECs). If so, switch to **update mode** — tell the user plainly ("นี่คือการปรับปรุง *X* ที่มีอยู่ ไม่ใช่ฟีเจอร์ใหม่" style, their language):
+
+- **Append** the new requirements/acceptance criteria to the existing SPEC.md; never delete promises that still hold — mark superseded ones as replaced, with the new one next to them.
+- STATUS.md: `done → planned` (back in the queue; the dashboard marks it ♻️), `updated: <today>`.
+- DECISIONS.md append: date, what's changing, why (user's words).
+- `/founder-rail:ship` then builds it like any planned feature — the plan gate protects the existing behavior.
+
+The dividing line (shared with `fix-bug`): broken against what SPEC promised = `/founder-rail:fix` · works as promised but wanted different = update mode here. Decide yourself; never make the user classify it.
+
+## Create the feature folder (new features)
 
 Slug: short kebab-case named after the *outcome*, not technology (`email-signup`, not `supabase-auth`).
 

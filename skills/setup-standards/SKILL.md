@@ -46,7 +46,7 @@ Presets live in `${CLAUDE_PLUGIN_ROOT}/standards/<preset>/`. All are TypeScript 
 
 ## Step 4 — Write constitution.md
 
-If the project has no `constitution.md`, copy the template from `${CLAUDE_PLUGIN_ROOT}/constitution.md`. Fill section 1 with:
+If the project has no `constitution.md`, copy the template from `${CLAUDE_PLUGIN_ROOT}/constitution.md`. Fill section 2 (Code standards) with:
 
 - Preset name + link to the public style guide it is based on
 - Chosen strictness, quoting the user's answer that led to it

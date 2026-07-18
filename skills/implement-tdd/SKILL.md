@@ -50,7 +50,7 @@ If the feature added or updated dependencies, run `npm audit --audit-level=criti
 - `IMPLEMENTATION.md` → `## Touchpoints`: every file/function created or changed, one line each.
 - `DECISIONS.md`: append significant choices (date, decision, why, plain-language impact). Append-only — never rewrite old entries.
 - `STATUS.md` → `in_review` while awaiting the user's acceptance; `done` after they accept.
-- Report in plain language (user's language): what works now, exact steps for the user to see it themselves (what to run/click), test results as pass counts, and any ⚠️ items.
+- Report in plain language (user's language): what works now, exact steps for the user to see it themselves (what to run/click), test results as pass counts, and any ⚠️ items. If the project has been launched before (constitution has a Deployment section), close by pointing to `/founder-rail:launch` to put this in front of real users.
 
 ## Hard rules
 

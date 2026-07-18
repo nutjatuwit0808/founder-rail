@@ -5,8 +5,8 @@
 > enforced by shell hooks — they block, they don't ask.
 >
 > (Template note: sections marked `<!-- SETUP:... -->` are filled in by the
-> `setup-techstack`, `setup-standards`, `setup-design`, and `setup-structure`
-> skills when this file is copied into a user's project.)
+> `setup-techstack`, `setup-standards`, `setup-design`, `setup-structure`,
+> and `setup-deploy` skills when this file is copied into a user's project.)
 
 ## 1. Tech stack
 
@@ -51,7 +51,20 @@ Fill in:
 - Verification: fresh-reviewer checks file placement against this section
 -->
 
-## 5. Workflow (non-negotiable)
+## 5. Deployment
+
+<!-- SETUP:DEPLOY
+Fill in (by setup-deploy, which may run later than the other setup skills):
+- Host: which preset (vercel-fullstack | railway-nest) and the plain-language
+  reason tied to the user's answers (budget, domain)
+- Production URL + custom domain if any
+- Env vars: the list of variable NAMES the app needs in production (never
+  values), and where the user manages them (host dashboard)
+- Rule: deploying to production always requires the launch pre-flight (tests
+  green, build passes, no critical vulnerabilities) and the user's ⚠️ approval
+-->
+
+## 6. Workflow (non-negotiable)
 
 1. **No code before an approved plan.** Every feature starts with a plan in
    `features/<slug>/IMPLEMENTATION.md`, translated to plain language, approved
@@ -69,7 +82,7 @@ Fill in:
    `SPEC.md` (what & why), `STATUS.md` (where it is), `DECISIONS.md`
    (append-only decision log), `IMPLEMENTATION.md` (plan + touchpoints).
 
-## 6. Safety (enforced by hooks — do not bypass)
+## 7. Safety (enforced by hooks — do not bypass)
 
 - Every saved JS/TS file is linted immediately; unfixable problems come back
   to the agent to fix.
@@ -79,13 +92,16 @@ Fill in:
 - Force-push and deleting main branches are blocked.
 - Committing a real `.env` secrets file is blocked (`.env.example` with
   placeholders is fine).
+- Commands that certainly destroy database data (full resets, dropping or
+  truncating a database) are blocked — if truly needed, the user runs them
+  personally after a plain-language explanation of what would be lost.
 - Code that runs strings as code (`eval` and friends) or injects raw HTML
   from variables is blocked at save time.
 - Dependencies with *critical* known vulnerabilities block setup and
   verification; *high* ones are reported ⚠️ in plain language, never
   silently ignored.
 
-## 7. Secure coding (always on — judged by the reviewer, not blocked by hooks)
+## 8. Secure coding (always on — judged by the reviewer, not blocked by hooks)
 
 These rules can't be checked by a machine without false alarms, so the
 `implementer` follows them while writing and `fresh-reviewer` verifies them
@@ -104,7 +120,29 @@ on every diff. A concrete violation is a review **blocker**:
 5. **Secrets and passwords never reach logs,** error messages, or API
    responses.
 
-## 8. Language rule
+### Security level
+
+<!-- SETUP:SECURITY-LEVEL
+Filled by setup-techstack: `baseline` or `sensitive-data`, with the user's
+answers that set it (does the app hold personal details? does money move?).
+-->
+
+When the level is **`sensitive-data`**, these additional rules apply:
+
+- Dependency vulnerabilities rated *high* also block ship/launch (baseline
+  blocks only *critical*). An unfixable transitive case may be excepted only
+  via a DECISIONS.md entry and stays a permanent ⚠️ in every checkup.
+- Personal details (emails, phone numbers, addresses, names) never reach
+  logs — same footing as secrets.
+- Every API response has an explicit field allowlist; the reviewer checks no
+  personal field leaves that isn't needed.
+- Every feature that *reads* personal data (not just writes) counts as ⚠️
+  and needs abuse-case tests.
+- Money amounts are integers in the smallest unit (satang/cents) — never
+  floating point.
+- A "delete my data" feature exists in the backlog from day one.
+
+## 9. Language rule
 
 Every user-facing summary is plain language in the user's own language — no
 technical jargon. Actions touching production, payments, or user data carry a
