@@ -14,6 +14,17 @@ pnpm --filter ./apps/api build
 Both apps must compile with no errors.
 
 ```
+pnpm --filter ./apps/web test
+pnpm --filter ./apps/api test
+```
+Both seeded tests must pass — confirms the test runners are genuinely wired in each app.
+
+```
+pnpm test:e2e
+```
+The smoke E2E must pass — confirms the founder can run end-to-end tests themselves with one command.
+
+```
 pnpm --filter ./apps/web dev
 ```
 Boots and serves the home page (fetch `http://localhost:3000` or open it in a browser); stop it after confirming.

@@ -43,6 +43,8 @@ Launch the `fresh-reviewer` agent with ONLY: the diff (or the command to produce
 
 Run the full test suite one final time. If the feature has a visible UI, run the `verify-visually` skill now — it is part of this harness, not optional.
 
+Also for UI features: add (or extend) a Playwright E2E spec in `e2e/` derived from the acceptance criteria, titled as a user scenario ("a customer takes a queue number and sees their position"), and confirm `npm run test:e2e` is green. This is the founder's own end-to-end proof — they rerun the whole journey anytime with one command, so every shipped UI feature must leave one behind.
+
 If the feature added or updated dependencies, run `npm audit --audit-level=critical` (or the pnpm equivalent): critical findings block completion; high findings are reported to the user in plain language with ⚠️, never silently ignored.
 
 ## Phase 7 — Record & report

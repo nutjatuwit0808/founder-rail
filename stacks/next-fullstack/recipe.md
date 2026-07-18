@@ -29,4 +29,33 @@ Lives inside the Next.js app itself — App Router route handlers (`src/app/api/
 
 ## 4. Health route (always, at scaffold time)
 
-Create `src/app/api/health/route.ts` returning HTTP 200 with `{ status: "ok", time: <ISO timestamp> }`. Deploy verification and `/founder-rail:checkup` ping this to tell "app down" from "network down" — it must exist before the first launch, so create it now.
+Create `src/lib/health.ts`:
+
+```ts
+export function healthPayload() {
+  return { status: 'ok' as const, time: new Date().toISOString() };
+}
+```
+
+and `src/app/api/health/route.ts` returning HTTP 200 with `healthPayload()`. Deploy verification and `/founder-rail:checkup` ping this to tell "app down" from "network down" — it must exist before the first launch, so create it now.
+
+## 5. Test runners (always, at scaffold time — TDD does not work without them)
+
+`create-next-app` ships no test runner; the whole harness (and the `pre-commit-test-gate` hook) depends on `npm test` being real. Install both layers now — re-check each tool's docs if config options have drifted:
+
+```
+npm install -D vitest @vitejs/plugin-react jsdom @testing-library/react @testing-library/jest-dom @testing-library/user-event @playwright/test
+npx playwright install chromium
+```
+
+- `vitest.config.ts`: react plugin, `environment: 'jsdom'`, `setupFiles: './src/test-setup.ts'`, `include: ['src/**/*.test.{ts,tsx}']`
+- `src/test-setup.ts`: `import '@testing-library/jest-dom/vitest';`
+- `playwright.config.ts`: `testDir: './e2e'`, `use.baseURL: 'http://localhost:3000'`, `webServer: { command: 'npm run dev', url: 'http://localhost:3000', reuseExistingServer: true }`
+- `package.json` scripts: `"test": "vitest run"`, `"test:e2e": "playwright test"`
+
+Seed one honest test per layer (never a trivial `expect(true)`):
+
+- `src/lib/health.test.ts` — asserts `healthPayload()` returns `status: 'ok'` and a parseable time
+- `e2e/smoke.spec.ts` — opens `/` and asserts the home page renders
+
+**The E2E layer is for the founder, not just CI**: they run `npm run test:e2e` themselves anytime to watch the whole app exercised end-to-end. Spec titles must therefore read as user scenarios ("a customer takes a queue number"), never as technical descriptions. `verify-visually` reuses this same Playwright install.

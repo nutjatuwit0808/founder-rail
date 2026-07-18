@@ -49,6 +49,13 @@ A minimal TypeScript package (`package.json` + `src/index.ts` + `tsconfig.json`)
 
 Deploy verification and `/founder-rail:checkup` ping these — they must exist before the first launch, so create them now.
 
-## 6. Root scripts
+## 6. Test runners (always, at scaffold time — TDD does not work without them)
 
-Add root `package.json` scripts that fan out to both apps, e.g. `"dev": "pnpm --parallel --filter ./apps/* dev"`, `"build": "pnpm --filter ./apps/* build"` — adjust to whatever pnpm version is installed supports.
+- `apps/api`: `nest new` already ships Jest with a passing seed spec — keep it; `pnpm --filter ./apps/api test` must work.
+- `apps/web`: same Vitest + Testing Library + Playwright setup as `../next-fullstack/recipe.md` §5 (run the installs inside `apps/web`), with one difference: the Playwright `webServer.command` must boot **both** apps (the root `dev` script) so E2E exercises web talking to api.
+- Seed honest tests: the health-payload unit test in `apps/web`, and an `e2e/smoke.spec.ts` that loads `/` — plus, once the api is reachable, an E2E asserting a page that calls the api renders real data.
+- **The E2E layer is for the founder**: `pnpm test:e2e` (root script) any time; spec titles read as user scenarios, never technical descriptions.
+
+## 7. Root scripts
+
+Add root `package.json` scripts that fan out to both apps, e.g. `"dev": "pnpm --parallel --filter ./apps/* dev"`, `"build": "pnpm --filter ./apps/* build"`, `"test": "pnpm --filter ./apps/* test"`, `"test:e2e": "pnpm --filter ./apps/web test:e2e"` — adjust to whatever pnpm version is installed supports.

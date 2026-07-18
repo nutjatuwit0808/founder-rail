@@ -29,6 +29,16 @@ npx vercel --prod
 
 Capture the production URL from the output; run `verify.md` against it.
 
+## Database backup before production migrations ⚠️
+
+Required by the launch command whenever a schema change ships. Run the dump through the host's env runner so the connection string never appears in chat or files the agent reads:
+
+```
+mkdir -p backups && npx vercel env run -- sh -c 'pg_dump "$DATABASE_URL" -f backups/pre-migrate-'$(date +%Y%m%d-%H%M)'.sql'
+```
+
+Verify the file exists and is non-empty. `backups/` must be in `.gitignore` (it contains real customer data — treat like a secret; suggest the user delete old dumps after a successful migration settles).
+
 ## Custom domain (only if the user has one)
 
 ```

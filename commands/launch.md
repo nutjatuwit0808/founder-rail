@@ -12,6 +12,8 @@ Launch the current project to production:
    - Nothing uncommitted that the user hasn't seen
    If any pre-flight check fails, stop and report in plain language — do not offer to launch anyway.
 3. ⚠️ **Approval gate.** Tell the user, in their language: what changed since the last launch (feature titles from `features/*/STATUS.md`, not diffs), that this goes in front of real customers, and any special risk (payments, login, data changes). AskUserQuestion: launch / not yet.
-4. Deploy following the launch steps in `${CLAUDE_PLUGIN_ROOT}/deploy/<preset>/recipe.md` (preset from constitution's Deployment section).
-5. Run the preset's `verify.md` against the production URL(s). A failed check means the launch is **not done** — fix and redeploy, or restore the previous deployment per the preset's DEPLOY.md, and say plainly what happened.
-6. Report: the live URL, what's new in plain language, what was verified, and remaining ⚠️ items if any.
+4. ⚠️ **If this launch includes database schema changes**: create a backup of the production database first, per the backup step in the preset's `recipe.md`. Verify the backup file exists and is non-empty before running any migration, and append the backup timestamp to the affected feature's `DECISIONS.md`. A migration without a verified backup is not allowed.
+5. Deploy following the launch steps in `${CLAUDE_PLUGIN_ROOT}/deploy/<preset>/recipe.md` (preset from constitution's Deployment section).
+6. Run the preset's `verify.md` against the production URL(s). A failed check means the launch is **not done** — fix and redeploy, or restore the previous deployment per the preset's DEPLOY.md, and say plainly what happened.
+7. If this launch added or removed a paid-able service (database, domain, host tier), update `COSTS.md` to match reality.
+8. Report: the live URL, what's new in plain language, what was verified, and remaining ⚠️ items if any.

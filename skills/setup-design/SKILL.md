@@ -64,6 +64,10 @@ Create `src/styles/tokens.css` (or the project's equivalent styles location). Us
 
 If Tailwind is present, also map these variables into the Tailwind theme (v4 `@theme` block or v3 `tailwind.config` extend) so utility classes use the same tokens.
 
+## Step 3.5 — Existing projects: adopt mode
+
+If the project already has styled UI: add the token file without touching existing styles. The tokens rule ("all UI uses tokens") applies to **new and edited** UI; existing hard-coded styles graduate when the screen they belong to is next worked on. Never propose a restyle-everything pass.
+
 ## Step 4 — Record in constitution.md
 
 Fill section 3 (Design): chosen direction + the user's answer, token file path, and the binding rule: **all UI code must use tokens — no hard-coded colors, sizes, or radii**. Note that `verify-visually` checks screenshots against these tokens.

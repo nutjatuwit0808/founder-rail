@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-founder-rail is a **Claude Code plugin** (not an application). It ships quality-gated, spec-driven development rails for non-technical founders. There is no build step, no compiled code, and no test runner for the plugin itself — it is entirely Markdown instruction files plus POSIX shell hooks. "Testing" a change means running the shell hooks by hand and reading the skill/command Markdown for correctness.
+founder-rail is a **Claude Code plugin** (not an application). It ships quality-gated, spec-driven development rails for non-technical founders. There is no build step, no compiled code, and no test runner for the plugin itself — it is entirely Markdown instruction files plus POSIX shell hooks. "Testing" a change means running the shell hooks by hand and reading the skill/command Markdown for correctness. For a full end-to-end exercise of the plugin, follow `docs/plugin-e2e-walkthrough.md` (scripted founder scenario, start → undo, with per-step expected outcomes; note `docs/` is local-only, not tracked).
 
 Distinguish two locations at all times:
 - **This repo** = the plugin source (skills, agents, commands, hooks, the `constitution.md` *template*).
@@ -73,6 +73,8 @@ echo '{"tool_input":{"command":"npx prisma migrate reset"}}' | sh hooks/db-dange
 `stacks/<preset>/` (`next-fullstack`, `next-nest`) and `structure/<preset>/` (`flat`, `feature-based`, `atomic-design`) follow the same shape as `standards/<preset>/`: a plain-language `STACK.md`/`STRUCTURE.md`, machine-runnable setup material (`recipe.md`+`verify.md`, or `scaffold/`+`eslint.structure.mjs`), and `install.md` for dev deps. `setup-techstack` and `setup-structure` (mirrors of `setup-standards`/`setup-design`) apply them. Structure presets enforce import boundaries by riding the existing `eslint-on-save` hook (`eslint-plugin-boundaries`, `eslint-plugin-check-file`) — never invent a new hook for something ESLint can already check.
 
 `deploy/<preset>/` (`vercel-fullstack`, `railway-nest`) follows the same shape (`DEPLOY.md`, `recipe.md`, `verify.md`); the preset is derived from the stack, never asked. Hard rule for deploy work: real secret values never pass through the agent — variable names only; the user enters values in the host dashboard.
+
+**Brownfield (adopt mode)**: every setup skill has an existing-project path — guardrails fully cover *new* code from day one; legacy files are ignored-but-listed and **graduate when touched** (first feature/fix that substantially edits them brings them to standard). Never mass-migrate, mass-reformat, or move existing files during setup — a giant cleanup diff is unreviewable and looks like breakage to the user.
 
 `security/baseline/` is not user-chosen: `setup-standards` merges it into every project unconditionally. Its hard rule (see its `SECURITY.md`): **only near-zero-false-positive rules may block** — the user can't read code, so a false alarm looks like the system is broken. Heuristic security checks belong in `fresh-reviewer`'s judgment (concrete, demonstrable findings only) and constitution.md §8, never in ESLint config or hooks.
 

@@ -31,6 +31,14 @@ Presets live in `${CLAUDE_PLUGIN_ROOT}/structure/<preset>/`.
 4. Copy `scaffold/` into a scratch location the `implement-tdd` harness can reference later (or leave it in the plugin — `implement-tdd` Phase 1 reads it directly from `${CLAUDE_PLUGIN_ROOT}/structure/<preset>/scaffold/`).
 5. **Verify before declaring done:** run the lint command from `install.md`. Setup is not complete until it runs with no configuration errors. If a plugin's rule names/options don't match what `eslint.structure.mjs` expects (plugin API drift), fix the config file, not the check.
 
+## Step 3.5 — Existing projects: adopt mode (never move files during setup)
+
+If the project already has substantial source code:
+
+1. Create the preset's top-level folders **alongside** the existing layout; do not move or rename a single existing file during setup.
+2. The boundary/naming rules only cover the preset's new folders (their globs already do), so legacy files don't light up.
+3. Record in constitution.md: new features are built in the preset layout; existing code migrates into it feature-by-feature via `/founder-rail:ship`, never in one big move.
+
 ## Step 4 — Write constitution.md
 
 Fill the "Code structure" section with:

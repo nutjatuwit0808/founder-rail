@@ -44,6 +44,15 @@ Presets live in `${CLAUDE_PLUGIN_ROOT}/standards/<preset>/`. All are TypeScript 
 4. **Merge the security baseline — always, no question asked.** Spread `${CLAUDE_PLUGIN_ROOT}/security/baseline/eslint.security.mjs` into the project's `eslint.config.mjs` and install its dev dependencies (`install.md` in the same folder). If the chosen standards preset ships `eslint-plugin-react` (`airbnb-style`, `typescript-strict`), also add `'react/no-danger': 'error'` to that preset's rules block. The baseline contains only near-zero-false-positive rules by design (see its `SECURITY.md`) — never add heuristic security rules to it. Strictness (`flexible`) does **not** downgrade security rules.
 5. **Verify before declaring done:** run lint against a real or sample source file (e.g. `npx eslint --no-error-on-unmatched-pattern src/`) and confirm it executes without configuration errors. Setup is not complete until lint actually runs.
 
+## Step 3.5 — Existing projects: adopt mode (never mass-migrate)
+
+If the project already has substantial source code (a `src/` with real files, git history), the rules change — running full lint on a legacy codebase floods thousands of errors, which to a non-technical user looks like the system broke the project:
+
+1. Apply the preset config as normal, but add the existing source paths to the ESLint `ignores` block, each marked `// [adopt: legacy — graduates when touched]`.
+2. Record the **graduation rule** in constitution.md: every *new* file is fully covered from day one; a legacy file gets removed from the ignore list and brought up to standard *as part of* the first feature/fix that substantially edits it.
+3. **Never** propose a "reformat everything" commit — a giant cleanup diff is unreviewable by the fresh-reviewer and meaningless to the user.
+4. Tell the user plainly: "กติกาคุณภาพคุมของใหม่ทั้งหมดตั้งแต่วันนี้ ส่วนของเก่าจะถูกยกระดับทีละส่วนเมื่อมีงานไปแตะ" (their language).
+
 ## Step 4 — Write constitution.md
 
 If the project has no `constitution.md`, copy the template from `${CLAUDE_PLUGIN_ROOT}/constitution.md`. Fill section 2 (Code standards) with:

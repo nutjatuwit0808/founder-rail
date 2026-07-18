@@ -20,10 +20,15 @@ Re-check `railway --help` and `npx vercel --help` before relying on flags — bo
    ```
    railway up
    ```
-6. **Run migrations against the production DB** ⚠️ — only after explicit approval, and never a destructive command (the `db-danger-guard` hook blocks those outright):
+6. **Run migrations against the production DB** ⚠️ — only after explicit approval, **and only after a verified backup**. Dump through `railway run` so the connection string stays on the host side, never in chat:
+   ```
+   mkdir -p backups && railway run sh -c 'pg_dump "$DATABASE_URL" -f backups/pre-migrate-'$(date +%Y%m%d-%H%M)'.sql'
+   ```
+   Verify the file exists and is non-empty (`backups/` must be gitignored — it holds real customer data). Then:
    ```
    railway run npx prisma migrate deploy
    ```
+   Never a destructive command — the `db-danger-guard` hook blocks those outright.
 
 ### Frontend — `apps/web` on Vercel
 

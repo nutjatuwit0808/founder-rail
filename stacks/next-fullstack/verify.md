@@ -8,6 +8,16 @@ npm run build
 Must complete with no errors — confirms the TypeScript project actually compiles.
 
 ```
+npm test
+```
+The seeded health test must pass — confirms the unit test runner is genuinely wired (TDD is impossible without this, and the commit hook checks it from day one).
+
+```
+npm run test:e2e
+```
+The smoke E2E must pass — confirms the founder can run end-to-end tests themselves with one command.
+
+```
 npm run dev
 ```
 Start it, confirm it boots and serves the home page (fetch `http://localhost:3000` or open it in a browser), then stop the dev server.
