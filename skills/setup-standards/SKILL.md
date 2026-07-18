@@ -41,7 +41,8 @@ Presets live in `${CLAUDE_PLUGIN_ROOT}/standards/<preset>/`. All are TypeScript 
    - `strict`: leave the config exactly as shipped.
    - `flexible`: downgrade the rules listed under "Flexible-mode downgrades" in the preset's `STANDARDS.md` from `error` to `warn` (marked `[flexible: warn]` in `eslint.config.mjs`).
 3. Install the dev dependencies from the preset's `install.md`, using the project's package manager (default npm). Create a minimal `package.json` first if none exists. Do **not** install Prettier for `standard-style`.
-4. **Verify before declaring done:** run lint against a real or sample source file (e.g. `npx eslint --no-error-on-unmatched-pattern src/`) and confirm it executes without configuration errors. Setup is not complete until lint actually runs.
+4. **Merge the security baseline — always, no question asked.** Spread `${CLAUDE_PLUGIN_ROOT}/security/baseline/eslint.security.mjs` into the project's `eslint.config.mjs` and install its dev dependencies (`install.md` in the same folder). If the chosen standards preset ships `eslint-plugin-react` (`airbnb-style`, `typescript-strict`), also add `'react/no-danger': 'error'` to that preset's rules block. The baseline contains only near-zero-false-positive rules by design (see its `SECURITY.md`) — never add heuristic security rules to it. Strictness (`flexible`) does **not** downgrade security rules.
+5. **Verify before declaring done:** run lint against a real or sample source file (e.g. `npx eslint --no-error-on-unmatched-pattern src/`) and confirm it executes without configuration errors. Setup is not complete until lint actually runs.
 
 ## Step 4 — Write constitution.md
 

@@ -22,7 +22,7 @@ commands/*.md   →  invoke  →  skills/*/SKILL.md  →  delegate to  →  agen
 ```
 
 - **commands/** — thin `/founder-rail:*` entry points. Each just invokes a skill and adds routing (e.g. `ship.md` picks the next planned feature, falls back to `plan-sprint`). Keep them thin; logic belongs in skills.
-- **skills/** — the real behavior. `setup-standards`, `setup-design` (onboarding); `idea-to-spec`, `plan-sprint` (planning); `implement-tdd` (the build harness); `verify-visually` (screenshot check); `render-dashboard` (the kanban).
+- **skills/** — the real behavior. `setup-techstack`, `setup-standards`, `setup-design`, `setup-structure` (onboarding, run in that order by `commands/start.md`); `idea-to-spec`, `plan-sprint` (planning); `implement-tdd` (the build harness); `verify-visually` (screenshot check); `render-dashboard` (the kanban).
 - **agents/** — `implementer` (writes code strictly by TDD) and `fresh-reviewer` (reviews a diff with **zero** implementation history — launched with only the diff, `SPEC.md`, and `constitution.md`).
 - **hooks/** — shell scripts wired by `hooks/hooks.json`; the enforcement layer. See below.
 
@@ -32,7 +32,7 @@ commands/*.md   →  invoke  →  skills/*/SKILL.md  →  delegate to  →  agen
 
 Every change must uphold these (from README.md / constitution.md). They are the design constraints, not suggestions:
 
-1. **The user never makes a technical decision.** Every question asked of the user is outcome/business-level. Asking them to pick a linter, framework, database, or style guide is forbidden — skills derive tech choices themselves. (See `setup-standards` "Forbidden" list, `idea-to-spec` "Forbidden" topics.)
+1. **The user never makes a technical decision.** Every question asked of the user is outcome/business-level. Asking them to pick a linter, framework, database, or style guide is forbidden — skills derive tech choices themselves. (See `setup-techstack`, `setup-standards`, and `setup-structure` "Forbidden" lists, `idea-to-spec` "Forbidden" topics.)
 2. **Critical rules are enforced by shell hooks, not prompt text** — so they survive context loss.
 3. **Markdown-only persistence.** Project status is *derived at read time* from `features/*/STATUS.md` frontmatter. Never cache it, never answer about status from memory (`render-dashboard` re-reads every time).
 4. **Verification never requires reading code** — automated tests + screenshots are the proof shown to the user.
@@ -51,6 +51,7 @@ Wired in `hooks/hooks.json`. When editing these, honor two hard constraints from
 |------|---------|--------|
 | `pre-commit-test-gate.sh` | PreToolUse Bash | `git commit` while `npm test` fails |
 | `push-safety.sh` | PreToolUse Bash | force-push, deleting main/master |
+| `env-commit-guard.sh` | PreToolUse Bash | `git commit` while a real `.env` file is staged (`.env.example`/`.sample`/`.template` allowed) |
 | `secret-scan.sh` | PreToolUse Edit/Write | writes containing secret-looking content (skips obvious placeholders) |
 | `eslint-on-save.sh` | PostToolUse Edit/Write | JS/TS file that fails `eslint --fix` (walks up to nearest `package.json`) |
 
@@ -65,6 +66,12 @@ echo '{"tool_input":{"command":"git push --force"}}' | sh hooks/push-safety.sh; 
 echo '{"tool_input":{"content":"const k = \"sk-ant-abcd1234efgh5678ijkl\""}}' | sh hooks/secret-scan.sh; echo "exit=$?"
 ```
 
+## Tech-stack and structure presets
+
+`stacks/<preset>/` (`next-fullstack`, `next-nest`) and `structure/<preset>/` (`flat`, `feature-based`, `atomic-design`) follow the same shape as `standards/<preset>/`: a plain-language `STACK.md`/`STRUCTURE.md`, machine-runnable setup material (`recipe.md`+`verify.md`, or `scaffold/`+`eslint.structure.mjs`), and `install.md` for dev deps. `setup-techstack` and `setup-structure` (mirrors of `setup-standards`/`setup-design`) apply them. Structure presets enforce import boundaries by riding the existing `eslint-on-save` hook (`eslint-plugin-boundaries`, `eslint-plugin-check-file`) — never invent a new hook for something ESLint can already check.
+
+`security/baseline/` is not user-chosen: `setup-standards` merges it into every project unconditionally. Its hard rule (see its `SECURITY.md`): **only near-zero-false-positive rules may block** — the user can't read code, so a false alarm looks like the system is broken. Heuristic security checks belong in `fresh-reviewer`'s judgment (concrete, demonstrable findings only) and constitution.md §7, never in ESLint config or hooks.
+
 ## Feature file convention
 
 Each feature in a user's project is a folder `features/<slug>/` (slug names the **outcome**, e.g. `email-signup`, never the tech). Four files, created by `idea-to-spec`:
@@ -76,7 +83,7 @@ Each feature in a user's project is a folder `features/<slug>/` (slug names the 
 
 ## v1 scope (keep changes inside these bounds)
 
-One stack (React + TypeScript web app), three standards presets (`standards/{airbnb-style,standard-style,typescript-strict}/`, chosen from business questions in `setup-standards`), dashboard is chat-text only (no HTML dashboard unless explicitly asked), single-user. Out of scope: multi-editor support, real-time server dashboards, compliance presets, team/role modes.
+Two tech-stack presets (`stacks/{next-fullstack,next-nest}/`, both TypeScript, chosen from outcome questions in `setup-techstack`), three standards presets (`standards/{airbnb-style,standard-style,typescript-strict}/`, chosen from business questions in `setup-standards`), three structure presets (`structure/{flat,feature-based,atomic-design}/`, chosen from one outcome question in `setup-structure`), dashboard is chat-text only (no HTML dashboard unless explicitly asked), single-user. Out of scope: multi-editor support, real-time server dashboards, compliance presets, team/role modes, mobile stacks.
 
 ## Contributing constraints
 

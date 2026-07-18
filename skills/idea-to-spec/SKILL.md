@@ -11,7 +11,7 @@ The user's words (command arguments or conversation), or a file from `inbox/`. I
 
 ## Clarify — at most 3 questions, all outcome-level
 
-Allowed topics: who will use it, what success looks like, what is explicitly *not* needed, how it relates to existing features. **Forbidden:** databases, APIs, frameworks, architecture, hosting — those are decided at implementation time by the harness, never at spec time, and never by the user.
+Allowed topics: who will use it, what success looks like, what is explicitly *not* needed, how it relates to existing features. **Forbidden:** databases, APIs, frameworks, architecture, hosting — the tech stack was already decided once, project-wide, by `setup-techstack`; a feature only *uses* it. Never re-litigate stack choices at spec time, and never ask the user.
 
 ## Create the feature folder
 
@@ -38,6 +38,10 @@ Slug: short kebab-case named after the *outcome*, not technology (`email-signup`
 - [ ] <each phrased so a non-technical person can check it by USING the app —
       "When I enter a wrong password, I see a clear message telling me what to do",
       never "auth returns 401">
+- [ ] <if the feature touches login, payments, or personal data (⚠️), include
+      misuse criteria too — what must NOT be possible: "When someone who isn't
+      the account owner tries to open this page, they see an access-denied
+      message, not the data">
 
 ## Non-goals
 - <what this feature deliberately does not do>

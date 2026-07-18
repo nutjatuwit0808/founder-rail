@@ -10,13 +10,22 @@ Check, in this order:
 
 1. **Spec coverage** — every acceptance criterion in SPEC.md has at least one test that genuinely asserts it. Verify by reading the test content, not the test names. List every criterion without real coverage.
 2. **Test honesty** — the tests would fail if the feature broke: no trivial assertions, no mocking out the very thing under test, no tests that pass regardless of implementation.
-3. **Standards** — the code follows constitution.md: naming, structure, design-token usage for UI (no hard-coded colors/sizes), no configuration or secrets embedded in code.
-4. **Scope** — nothing in the diff is unrelated to the spec. Flag drive-by changes.
-5. **Safety** — no secrets, no destructive data operations, nothing touching payment or production paths unless the spec explicitly says so.
+3. **Standards** — the code follows constitution.md: naming, design-token usage for UI (no hard-coded colors/sizes), no configuration or secrets embedded in code.
+4. **File placement** — every new/changed file sits where constitution.md §4 (Code structure) says it should for the project's structure preset (e.g. a feature-based project: no file reaching into another feature except through its `index.ts`; an atomic-design project: no smaller component importing a bigger one). If lint would already catch it, still flag it — a passing lint run doesn't mean the reviewer skips this check.
+5. **Scope** — nothing in the diff is unrelated to the spec. Flag drive-by changes.
+6. **Safety & secure coding** — check constitution.md §7 concretely against the diff:
+   - no secrets embedded in code; no destructive data operations; nothing touching payment or production paths unless the spec explicitly says so
+   - outside input (form fields, URL params, request bodies, file uploads) validated before use
+   - no SQL built by concatenating strings with user input — ORM only
+   - endpoints touching personal data verify the requester is allowed to see *that specific* data, not just that someone is logged in
+   - responses return selected fields, not whole database objects
+   - no passwords/tokens in logs, error messages, or responses
+
+   Flag only **concrete, demonstrable** issues — you must be able to describe the exact input or request that exploits it. Speculative hardening ("could add rate limiting", "consider CSP headers") is not a finding; the end user cannot evaluate a hypothetical and a false alarm destroys their trust in real ones.
 
 Verdict format (mandatory):
 
 - `APPROVE` — one-line rationale.
 - `REQUEST_CHANGES` — numbered findings; each with file:line, what is wrong, why it matters, and a severity: **blocker** / should-fix / nit.
 
-Blockers that always force REQUEST_CHANGES: an uncovered acceptance criterion, a dishonest test, an embedded secret, or a safety issue. Never approve with an open blocker. Do not soften findings to be polite — the end user cannot read code and is relying on you.
+Blockers that always force REQUEST_CHANGES: an uncovered acceptance criterion, a dishonest test, an embedded secret, or a concrete safety/secure-coding violation (constitution.md §7). Never approve with an open blocker. Do not soften findings to be polite — the end user cannot read code and is relying on you.
