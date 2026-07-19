@@ -23,6 +23,10 @@ Read-only. Findings become offers, never silent fixes.
 - Fetch the production URL and the health route (`/api/health` or `/health` per stack) — down = 🔴.
 - Pull recent error logs via the host CLI (`vercel logs` / `railway logs`; the user's own CLI login from setup-deploy — never handle tokens). The same error repeating ≥ 3 times in a day = ⚠️ finding, and **write it into `inbox/`** using the error-report convention: first lines = plain-language symptom as a user would say it, then a `---`, then the raw log lines for the agent (strip anything that looks like personal data — emails, names, tokens — before writing). `idea-to-spec`/`fix-bug` treat inbox files in this format as bug reports.
 
+## Record the run
+
+Append one line to `checkups.md` at the project root (create the file with a one-line header if missing): `<YYYY-MM-DD> — <headline verdict> (<one-phrase summary>)`. Append-only — this is both the founder's health history and what `/founder-rail:next` reads to know when the last checkup happened.
+
 ## Report format
 
 1. **One headline line**: "สุขภาพดี ✅" / "มีเรื่องควรจัดการ ⚠️ N เรื่อง" / "มีเรื่องด่วน 🔴 N เรื่อง" (user's language).

@@ -81,6 +81,13 @@ Fill in (by setup-deploy, which may run later than the other setup skills):
 5. **Every feature is documented** in `features/<slug>/`:
    `SPEC.md` (what & why), `STATUS.md` (where it is), `DECISIONS.md`
    (append-only decision log), `IMPLEMENTATION.md` (plan + touchpoints).
+6. **No dead ends.** Every user-facing report ends with exactly **one**
+   suggested next step (never a menu of options). The user must never be left
+   wondering what to do — and `/founder-rail:next` answers "where am I, what
+   now?" whenever they are.
+7. **Route, never reject.** A command invoked in the "wrong" situation takes
+   the user to the right flow with a one-line explanation — it never answers
+   "you can't do that here."
 
 ## 7. Safety (enforced by hooks — do not bypass)
 

@@ -29,4 +29,4 @@ AskUserQuestion: proceed / cancel. No touch before approval.
 
 - STATUS.md → `status: planned`, `updated: <today>`, body notes it was walked back (the dashboard shows ♻️).
 - DECISIONS.md append: date, "walked back", why (user's words), what was learned.
-- Report: what's gone, what's untouched, that the work isn't lost (it's back in the queue), and — if the project is launched — that production still runs the old version until the next `/founder-rail:launch` ⚠️.
+- Report: what's gone, what's untouched, that the work isn't lost (it's back in the queue), and — if the project is launched — that production still runs the old version until the next `/founder-rail:launch` ⚠️. Close with exactly one next step: "อยากปรับสเปคก่อนสร้างรอบใหม่ไหม — เล่ามาได้เลย (`/founder-rail:idea`)".

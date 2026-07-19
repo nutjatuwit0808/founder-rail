@@ -91,6 +91,6 @@ updated: <YYYY-MM-DD>
 
 ## Confirm
 
-Read the spec back to the user in plain language (their language) and adjust until they confirm. If the idea came from `inbox/`, delete the inbox file after the spec exists. Close by mentioning `/founder-rail:status` to see the board and `/founder-rail:ship` to build.
+Read the spec back to the user in plain language (their language) and adjust until they confirm. If the idea came from `inbox/`, delete the inbox file after the spec exists. Close with exactly **one** next step (constitution §6.6): normally "`/founder-rail:ship` เมื่อพร้อมให้เริ่มสร้าง" — never a menu of commands.
 
 Status values used across founder-rail: `backlog`, `planned`, `in_progress`, `in_review`, `done`, `blocked`.

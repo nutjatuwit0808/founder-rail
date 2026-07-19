@@ -22,6 +22,7 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 | 4 | Verification never requires the user to read code — automated tests + screenshots are the proof |
 | 5 | Every important output passes through a plain-language layer, with ⚠️ risk indicators for production/payment/data actions |
 | 6 | Plan-then-approve gate before every implementation |
+| + | **Never lost**: every report ends with exactly one next step, wrong-door commands route instead of rejecting, plain words with no command still reach the right flow, and `/founder-rail:next` answers "where am I, what now?" |
 
 ## Install
 
@@ -44,6 +45,7 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 | `/founder-rail:launch` | Put the latest work on the real internet — pre-flight, ⚠️ approval, deploy, verify |
 | `/founder-rail:undo` | Walk back the most recent shipped feature safely (git revert, plain-language cost) |
 | `/founder-rail:checkup` | Monthly health report: vulnerabilities, tests, stale parts, production errors |
+| `/founder-rail:next` | Lost? One answer: where the project is and the single next step |
 
 ## How the skills work
 
@@ -143,7 +145,8 @@ founder-rail/
 │           secret-scan.sh, push-safety.sh, env-commit-guard.sh,
 │           db-danger-guard.sh}
 ├── commands/{start.md, idea.md, status.md, ship.md, preview.md, design.md,
-│              fix.md, launch.md, undo.md, checkup.md}
+│              fix.md, launch.md, undo.md, checkup.md, next.md}
+├── templates/front-desk.md  ← installed into the user's project as .claude/founder-rail.md
 ├── constitution.md          ← template, copied into the user's project
 ├── inbox/                   ← raw untriaged ideas + production error reports
 └── features/<slug>/         ← per-feature knowledge (in the user's project)

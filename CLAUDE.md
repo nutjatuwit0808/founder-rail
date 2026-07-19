@@ -21,7 +21,8 @@ commands/*.md   →  invoke  →  skills/*/SKILL.md  →  delegate to  →  agen
                         hooks/*.sh enforce the rules at tool-call time (not prompts)
 ```
 
-- **commands/** — thin `/founder-rail:*` entry points. Each just invokes a skill and adds routing (e.g. `ship.md` picks the next planned feature, falls back to `plan-sprint`). Keep them thin; logic belongs in skills.
+- **commands/** — thin `/founder-rail:*` entry points. Each just invokes a skill and adds routing (e.g. `ship.md` picks the next planned feature, falls back to `plan-sprint`). Keep them thin; logic belongs in skills. Exception: `next.md` (the "where am I, what now?" compass) is a self-contained decision tree over `features/*/STATUS.md`, `inbox/`, constitution, and `checkups.md`.
+- **templates/** — files installed into the user's project verbatim. `front-desk.md` → `.claude/founder-rail.md` + an `@.claude/founder-rail.md` line in the user's CLAUDE.md (written by `start.md`; loaded every session, so no-slash plain-language requests route to the right flow even after total context loss). `/next` self-heals the reference if the user deletes it.
 - **skills/** — the real behavior. `setup-techstack`, `setup-standards`, `setup-design`, `setup-structure` (onboarding, run in that order by `commands/start.md`; `setup-design` doubles as the tune-mode engine behind `/founder-rail:design` — a mode gate on whether a tokens file exists picks first-time vs tune, both sharing a blocking WCAG contrast guardrail); `setup-deploy` (first launch); `idea-to-spec` (new features *and* updates to done ones), `plan-sprint` (planning); `implement-tdd` (the build harness); `fix-bug` (reproduce → regression test → fix); `undo-feature` (revert-only walk-back); `verify-visually` (screenshot check); `health-check` (read-only checkup); `render-dashboard` (the kanban).
 - **agents/** — `implementer` (writes code strictly by TDD) and `fresh-reviewer` (reviews a diff with **zero** implementation history — launched with only the diff, `SPEC.md`, and `constitution.md`).
 - **hooks/** — shell scripts wired by `hooks/hooks.json`; the enforcement layer. See below.
@@ -38,6 +39,8 @@ Every change must uphold these (from README.md / constitution.md). They are the 
 4. **Verification never requires reading code** — automated tests + screenshots are the proof shown to the user.
 5. **Every user-facing output is plain language, in the user's own language**, with ⚠️ risk indicators for production/payment/login/data-deletion actions.
 6. **Plan-then-approve gate before every implementation** (`implement-tdd` Phase 0).
+
+Never-lost rules (constitution §6.6–6.7): every user-facing report ends with exactly **one** suggested next step (never a menu), and a command invoked in the wrong situation **routes instead of rejecting**. When adding/changing a skill, keep both intact.
 
 ## Hooks (the enforcement layer)
 
