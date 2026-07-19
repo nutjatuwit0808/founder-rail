@@ -39,6 +39,7 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 | `/founder-rail:status` | Kanban board derived from markdown — what's where |
 | `/founder-rail:ship` | Build the next planned feature through the full quality harness |
 | `/founder-rail:preview` | Open the app locally — link + what to try |
+| `/founder-rail:design` | Set or adjust look & feel from a logo or plain words ("softer", "bigger text") — token-safe, contrast-guarded |
 | `/founder-rail:fix` | Report something broken in plain words → reproduced, regression-tested fix |
 | `/founder-rail:launch` | Put the latest work on the real internet — pre-flight, ⚠️ approval, deploy, verify |
 | `/founder-rail:undo` | Walk back the most recent shipped feature safely (git revert, plain-language cost) |
@@ -111,7 +112,7 @@ flowchart LR
 
 - **`setup-techstack`** — one-time, runs first. Asks outcome questions (does another client need the same API, is there heavy background work) and derives the stack itself: `next-fullstack` (Next.js doing both frontend and backend) by default, `next-nest` (Next.js + a separate NestJS backend, pnpm monorepo) only when the answers signal a real need. Scaffolds it, verifies it builds and boots, and writes section 1 of `constitution.md`.
 - **`setup-standards`** — one-time. Asks the user only *business* questions (how strict, who will maintain the code) and derives every technical choice itself. Copies the `airbnb-style` ESLint + Prettier preset into the project, installs dev dependencies, and verifies lint actually runs before declaring done. Writes section 2 of `constitution.md`.
-- **`setup-design`** — one-time, frontend only. Turns a chosen *feeling* (minimal / bold / playful) into real design tokens, and records the rule that all UI code must use tokens (no hard-coded colors, sizes, radii).
+- **`setup-design`** — frontend only, two modes behind one gate. First-time: turns a chosen *feeling* (minimal / bold / playful) — and optionally the user's logo/brand color, confirmed via a color swatch — into real design tokens. Tune (`/founder-rail:design`, any time): screenshots the real app and adjusts tokens from plain-language remarks ("softer", "bigger text"), detecting when accumulated tweaks amount to a full re-theme and confirming first. Both modes pass a blocking WCAG contrast guardrail — readability is not tradeable. Records the rule that all UI code must use tokens (no hard-coded colors, sizes, radii); tune history is appended to `design/DECISIONS.md`.
 - **`setup-structure`** — one-time, frontend only. Asks one outcome question (small/demo, growing into several features, or design-heavy UI) and picks `flat`, `feature-based`, or `atomic-design`. Wires import-boundary and naming-convention ESLint rules into the project's existing lint config — riding the `eslint-on-save` hook — and writes section 4 of `constitution.md`.
 - **`idea-to-spec`** — turns a plain-language idea (or an `inbox/` file) into a tracked feature. Asks at most 3 outcome-level questions (never about databases, frameworks, or architecture) and scaffolds `features/<slug>/` with `SPEC.md`, `STATUS.md`, `DECISIONS.md`, and `IMPLEMENTATION.md`. The slug names the *outcome* (`email-signup`), not the tech.
 - **`plan-sprint`** — groups `backlog` features into a simple sprint. Asks one outcome question about what matters most now, respects `blocked_by` order, caps a sprint at 5 items, and marks the chosen features `planned`. No story points or velocity.
@@ -141,8 +142,8 @@ founder-rail/
 ├── hooks/{hooks.json, eslint-on-save.sh, pre-commit-test-gate.sh,
 │           secret-scan.sh, push-safety.sh, env-commit-guard.sh,
 │           db-danger-guard.sh}
-├── commands/{start.md, idea.md, status.md, ship.md, preview.md, fix.md,
-│              launch.md, undo.md, checkup.md}
+├── commands/{start.md, idea.md, status.md, ship.md, preview.md, design.md,
+│              fix.md, launch.md, undo.md, checkup.md}
 ├── constitution.md          ← template, copied into the user's project
 ├── inbox/                   ← raw untriaged ideas + production error reports
 └── features/<slug>/         ← per-feature knowledge (in the user's project)
@@ -150,7 +151,7 @@ founder-rail/
 
 ## v1 scope
 
-- Two tech-stack presets: `next-fullstack` (default) and `next-nest`, both TypeScript
+- Two tech-stack presets: `next-fullstack` (default) and `next-nest`, both TypeScript — each with a locked sign-in recipe (Auth.js, passwordless by default; hand-rolled auth is a review blocker)
 - Three standards presets: Airbnb-style, Standard-style (StandardJS via neostandard), TypeScript-strict
 - Three structure presets: `flat`, `feature-based` (default), `atomic-design`
 - Two deploy presets: `vercel-fullstack`, `railway-nest` — secrets never pass through the agent

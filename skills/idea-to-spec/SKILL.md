@@ -54,6 +54,14 @@ Slug: short kebab-case named after the *outcome*, not technology (`email-signup`
       the account owner tries to open this page, they see an access-denied
       message, not the data">
 
+If the feature needs to know **who the user is** (accounts, "my orders", saved
+preferences) and the project has no sign-in yet, note in IMPLEMENTATION.md that
+the build must follow `${CLAUDE_PLUGIN_ROOT}/stacks/<preset>/auth.md` — the
+stack's standard sign-in recipe (Auth.js, passwordless by default). Never
+re-decide auth per feature, and never ask the user which login technology they
+want; the only outcome question allowed is e.g. "อยากให้ลูกค้ากดเข้าด้วยบัญชี
+Google ได้ด้วยไหม หรืออีเมลอย่างเดียวพอ?"
+
 ## Non-goals
 - <what this feature deliberately does not do>
 
