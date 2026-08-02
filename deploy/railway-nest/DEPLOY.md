@@ -14,7 +14,7 @@ A `next-nest` project has a long-running backend process — Vercel alone doesn'
 
 ## Secrets ⚠️
 
-Same rule as all founder-rail deploys: real values never pass through the agent. Variable NAMES are documented in `.env.example` per app; the user enters VALUES in each host's dashboard (Railway: service → Variables · Vercel: Project → Settings → Environment Variables). Railway can inject its own Postgres `DATABASE_URL` into the api service directly — prefer that over copying values by hand.
+Same rule as all founder-rail deploys: real values never pass through the agent — including Stripe secret/webhook keys if the project takes payments. Variable NAMES are documented in `.env.example` per app; the user enters VALUES in each host's dashboard (Railway: service → Variables · Vercel: Project → Settings → Environment Variables). Railway can inject its own Postgres `DATABASE_URL` into the api service directly — prefer that over copying values by hand.
 
 ## Uptime watch (optional, recommended after launch)
 

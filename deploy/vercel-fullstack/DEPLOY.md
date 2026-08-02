@@ -14,7 +14,7 @@ The default deploy target whenever the project's stack is `next-fullstack`. One 
 
 ## Secrets ⚠️
 
-Real secret values (database URL, API keys) must never pass through the agent as plain text. The skill prepares a `.env.example` documenting every variable NAME the app needs, and the user enters the VALUES themselves in the Vercel dashboard (Project → Settings → Environment Variables) following the plain-language guide the skill prints.
+Real secret values (database URL, API keys, Stripe secret/webhook keys if the project takes payments) must never pass through the agent as plain text. The skill prepares a `.env.example` documenting every variable NAME the app needs, and the user enters the VALUES themselves in the Vercel dashboard (Project → Settings → Environment Variables) following the plain-language guide the skill prints.
 
 ## Uptime watch (optional, recommended after launch)
 

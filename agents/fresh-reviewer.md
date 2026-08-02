@@ -21,6 +21,7 @@ Check, in this order:
    - responses return selected fields, not whole database objects
    - no passwords/tokens in logs, error messages, or responses
    - auth work uses the stack's standard recipe (`stacks/<preset>/auth.md` — Auth.js): any hand-rolled session handling, token signing/parsing outside the central guard, or custom password hashing is a **blocker**, even if it looks correct
+   - payment work uses the stack's standard recipe (`stacks/<preset>/payments.md` — Stripe): any hand-rolled card handling, a webhook handler that doesn't verify the Stripe signature, or a webhook that isn't idempotent (would double-fulfill on a retried delivery) is a **blocker**, even if it looks correct
 
    If constitution.md §8 declares security level `sensitive-data`, additionally check: no personal details (emails, phones, addresses, names) in logs; API responses use explicit field allowlists with no unneeded personal fields; money amounts are integers in the smallest unit, never floats.
 

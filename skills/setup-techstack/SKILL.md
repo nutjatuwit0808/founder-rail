@@ -28,11 +28,13 @@ Then two data-sensitivity questions (they set the security level, not the stack)
 
 Any "yes" → security level `sensitive-data` (recorded in Step 5; see constitution §8). Both "no" → `baseline`.
 
-**Forbidden:** asking the user to name a framework, database, or architecture. If they volunteer one, respect it (map to the closest preset); never ask.
+If Q5 ("will money move through the app") is "yes", ask one more outcome question before scaffolding: "ลูกค้าจะจ่ายเงินเป็นสกุลไหน?" (what currency will customers pay in) — the answer drives the payment recipe in Step 4. Never ask which payment provider to use; it's locked to Stripe (see `stacks/<preset>/payments.md`).
+
+**Forbidden:** asking the user to name a framework, database, architecture, or payment provider. If they volunteer one, respect it (map to the closest preset); never ask.
 
 ## Step 3 — Summarize and get approval
 
-Before scaffolding, tell the user in plain language what will be built and why, based on their answers ("From what you told me, I'll set this up as a single web app that handles both what you see and what happens behind the scenes" or "...as a website plus a separate backend service, because you need [reason]"). Add ⚠️ if a database or login will be wired in. Use AskUserQuestion: approve / adjust. Do not scaffold before approval.
+Before scaffolding, tell the user in plain language what will be built and why, based on their answers ("From what you told me, I'll set this up as a single web app that handles both what you see and what happens behind the scenes" or "...as a website plus a separate backend service, because you need [reason]"). Add ⚠️ if a database, login, or payment integration will be wired in. Use AskUserQuestion: approve / adjust. Do not scaffold before approval.
 
 ## Step 4 — Scaffold and verify
 
@@ -41,6 +43,7 @@ Presets live in `${CLAUDE_PLUGIN_ROOT}/stacks/<preset>/`.
 1. Follow `recipe.md` for the chosen preset exactly, in order.
 2. Run every command in `verify.md` for the chosen preset. **Setup is not complete until all of them pass.** A build or boot failure means setup failed — fix it before continuing, don't report success.
 3. If the recipe calls for a database (Prisma), that step carries ⚠️ and must have been covered by the Step 3 approval before running.
+4. If Q5 ("will money move through the app") was answered "yes", also follow `payments.md` for the chosen preset (Stripe, locked — see the recipe file), using the currency from Step 2. This carries ⚠️ the same as the database step and must already be covered by the Step 3 approval.
 
 ## Step 5 — Write constitution.md
 

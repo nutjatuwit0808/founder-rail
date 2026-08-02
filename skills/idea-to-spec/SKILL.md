@@ -62,6 +62,17 @@ re-decide auth per feature, and never ask the user which login technology they
 want; the only outcome question allowed is e.g. "อยากให้ลูกค้ากดเข้าด้วยบัญชี
 Google ได้ด้วยไหม หรืออีเมลอย่างเดียวพอ?"
 
+If the feature involves **the customer paying money** (checkout, a paid order,
+a subscription) and the project has no payment recipe installed yet, note in
+IMPLEMENTATION.md that the build must follow
+`${CLAUDE_PLUGIN_ROOT}/stacks/<preset>/payments.md` — the stack's standard
+payment recipe (Stripe, Checkout-hosted, one-time payments by default). This
+also raises the project to security level `sensitive-data` if it wasn't
+already (constitution §8) — flag that ⚠️ in the plan like any other risky
+item. Never re-decide which payment provider to use per feature, and never ask
+the user which one; the only outcome question allowed is the currency, asked
+once when the recipe is first installed.
+
 ## Non-goals
 - <what this feature deliberately does not do>
 

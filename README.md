@@ -154,7 +154,7 @@ founder-rail/
 
 ## v1 scope
 
-- Two tech-stack presets: `next-fullstack` (default) and `next-nest`, both TypeScript — each with a locked sign-in recipe (Auth.js, passwordless by default; hand-rolled auth is a review blocker)
+- Two tech-stack presets: `next-fullstack` (default) and `next-nest`, both TypeScript — each with a locked sign-in recipe (Auth.js, passwordless by default; hand-rolled auth is a review blocker) and a locked payment recipe (Stripe Checkout, one-time payments; hand-rolled card/webhook handling is a review blocker)
 - Three standards presets: Airbnb-style, Standard-style (StandardJS via neostandard), TypeScript-strict
 - Three structure presets: `flat`, `feature-based` (default), `atomic-design`
 - Two deploy presets: `vercel-fullstack`, `railway-nest` — secrets never pass through the agent
