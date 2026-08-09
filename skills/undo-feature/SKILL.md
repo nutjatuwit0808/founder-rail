@@ -9,6 +9,8 @@ description: Safely walk back the most recently shipped feature using git revert
 
 From `features/*/STATUS.md` find the most recently `done` feature; confirm against `git log` which commits belong to it. Show the user (plain title, their language): "The most recent finished piece is *X*, completed <date>. That's what can be walked back."
 
+If the user named a specific feature and it is **not** this latest one, say so directly — v1 only supports walking back the most recently shipped feature, not an arbitrary older one — and route, don't reject: point to `/founder-rail:fix` if something about that older feature is broken, or `/founder-rail:idea` if they want it changed instead. Do not attempt a revert on anything but the latest feature.
+
 ## Step 2 — Explain the cost, then gate ⚠️
 
 Before touching anything, say plainly:

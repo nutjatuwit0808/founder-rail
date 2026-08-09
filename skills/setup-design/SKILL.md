@@ -109,7 +109,7 @@ Fill constitution.md section 3 (Design): chosen direction + the user's answers, 
 
 ## Step 5 — Preview & report
 
-Render a small sample (button + card + a paragraph of text using the tokens; a throwaway HTML file screenshotted with Playwright works) and show it: "หน้าตาแนวนี้ — ใช่ feeling ที่อยากได้ไหม?" Adjust on request (through the same guardrail), then report in plain language.
+Render a small sample (button + card + a paragraph of text using the tokens; a throwaway HTML file screenshotted with Playwright works) and show it. When run as part of `/founder-rail:start`'s combined onboarding, this preview was already covered by `start.md`'s single combined approval before Step 4 wrote the tokens — just show the render and report, no separate confirm question here. When run standalone (via `/founder-rail:design` on a project with no tokens file yet, outside `/start`), ask directly: "หน้าตาแนวนี้ — ใช่ feeling ที่อยากได้ไหม?" Adjust on request (through the same guardrail), then report in plain language.
 
 ---
 
@@ -119,9 +119,11 @@ Entered whenever a tokens file already exists (usually via `/founder-rail:design
 
 ## The loop
 
-1. **Show reality first.** Boot the app and screenshot 2–3 real pages (same mechanism as `verify-visually` — throwaway Playwright script, viewport 1280×800 plus 390×844 if the app is mobile-facing). Never tune against imagined UI.
+1. **Show reality first.** Boot the app and screenshot 2–3 real pages (same mechanism as `verify-visually` — throwaway Playwright script, both viewport 1280×800 and 390×844 always, unless the page is marked internal/desktop-only in its SPEC.md). Never tune against imagined UI.
 2. **Listen.** The user points in plain words: "โทนอ่อนกว่านี้", "ปุ่มดูแข็งไป", "ตัวหนังสือเล็ก อ่านยากบนมือถือ". Translate each remark into **token value changes only** — hue/lightness shifts, radius, spacing, type scale. Touching component code in tune mode is forbidden; that discipline is exactly what keeps the whole app consistent from one edit.
 3. **Direction-drift check.** If a request (or the accumulated session) effectively amounts to a different direction — e.g. a Minimal app asked round-by-round into big radii, saturated palette, playful shadows — do not silently comply. Say it plainly: "ที่ขอมาแนว ๆ นี้ มันคือการเปลี่ยนโทนทั้งชุดจากเรียบนิ่งเป็นสนุกสดใส — เอาแบบนั้นเลยไหม?" If yes, rerun First-time Steps 2→3/3b as a deliberate re-theme (keeping the brand color unless told otherwise) and record it as a direction change. If no, scope the tweak back to what fits the current direction.
+
+   **Out-of-scope requests.** If the request needs a structural/component change, not a token value — moving a button's position, changing what's on a page, adding/removing an element — say so plainly: this is a feature change, not a design tune ("นี่คือการเปลี่ยนฟีเจอร์ ไม่ใช่การจูนดีไซน์"), and route to `/founder-rail:idea`. Never bend the "token values only" rule to accommodate it.
 4. **Contrast guardrail** (below) on every iteration — no exceptions for "just a small tweak".
 5. **Re-render** the same pages, show before/after, ask if it's right. Loop to 2, or finish.
 

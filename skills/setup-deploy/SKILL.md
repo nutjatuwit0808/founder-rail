@@ -33,13 +33,14 @@ Always end with a **preview deploy** and confirm the preview URL loads before of
 
 ## Step 4 — Write constitution.md and COSTS.md
 
-Fill section 5 (Deployment): preset + plain-language reason, production URL (or "preview only so far"), the env var NAME list and where values are managed, and the standing rule: production launches only via `/founder-rail:launch` pre-flight + ⚠️ approval.
+Fill section 5 (Deployment): preset + plain-language reason, production URL (or "preview only so far"), the env var NAME list and where values are managed, and the standing rule: production launches only via `/founder-rail:launch` pre-flight + ⚠️ approval. If "First launched" is still empty, set it to today's date — this is a one-time write; `/founder-rail:launch` on later redeploys never touches it.
 
 Also create `COSTS.md` at the project root, **in the user's language**, plain words throughout:
 
 - What the current setup costs today (usually ฿0 — say which free allowances it sits on, in outcome terms: "roughly how many visitors/data before it stops being free")
 - What would trigger the **first bill** and its rough size (host tier, database, domain renewal)
 - One line per paid-able thing, nothing technical
+- If any shipped feature follows `stacks/<preset>/realtime.md` (live-updating pages), one plain line about polling: "ยิ่งลูกค้าเปิดหน้าค้างไว้นาน ยิ่งมี request มากขึ้นเล็กน้อย"
 
 `/founder-rail:launch` updates this file whenever a launch adds or removes a paid-able service — the user should never learn about a cost from an invoice first.
 

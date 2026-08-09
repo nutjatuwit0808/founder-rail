@@ -32,7 +32,7 @@ Append one line to `checkups.md` at the project root (create the file with a one
 1. **One headline line**: "สุขภาพดี ✅" / "มีเรื่องควรจัดการ ⚠️ N เรื่อง" / "มีเรื่องด่วน 🔴 N เรื่อง" (user's language).
 2. Findings ranked by risk, each: plain-language symptom → what it means for the business → an offer ("ให้ผมจัดการเลยไหม? จะเข้า flow ซ่อมตามปกติ").
 3. No jargon anywhere: not "CVE", "semver", "major version" — say "ตัวประกอบที่แอปใช้อยู่มีจุดอ่อนที่คนร้ายรู้กันแล้ว" style.
-4. Close with when to run the next checkup (suggest monthly).
+4. Close with when to run the next checkup: read "First launched" from constitution.md §5 — less than 30 days ago, suggest **weekly** (real money/customers moving through a brand-new launch carries more risk per unit time than a settled project); past 30 days, suggest monthly as before; section not filled at all (never launched), no cadence to suggest.
 
 ## Hard rules
 

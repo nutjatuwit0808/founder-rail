@@ -20,8 +20,13 @@ Check, in this order:
    - endpoints touching personal data verify the requester is allowed to see *that specific* data, not just that someone is logged in
    - responses return selected fields, not whole database objects
    - no passwords/tokens in logs, error messages, or responses
+   - a feature that decrements stock/limited quantity (checkout, cart, reservations) does it atomically — a conditional update checking the remaining count in the same operation, not a separate read-then-write — a **blocker** if two simultaneous purchases could both succeed on the last unit
+   - a feature that changes an order's status defines the allowed transitions and checks the current status first — a **blocker** if it just sets a new status string with no check (e.g. marking "shipped" without verifying it was "paid")
    - auth work uses the stack's standard recipe (`stacks/<preset>/auth.md` — Auth.js): any hand-rolled session handling, token signing/parsing outside the central guard, or custom password hashing is a **blocker**, even if it looks correct
+   - any page/endpoint under `/staff/*` checks `role === "staff"`, not just that a session exists (constitution §8 rule 3 extended: *which role*, not just logged in) — a **blocker** if a customer session could reach staff-only data
    - payment work uses the stack's standard recipe (`stacks/<preset>/payments.md` — Stripe): any hand-rolled card handling, a webhook handler that doesn't verify the Stripe signature, or a webhook that isn't idempotent (would double-fulfill on a retried delivery) is a **blocker**, even if it looks correct
+   - live-updating UI (`stacks/<preset>/realtime.md`) polls no faster than the recipe's 5s default without a reason recorded in DECISIONS.md, always clears its interval on unmount (a leaked interval is a **blocker**), and the polled/streamed endpoint checks the caller's authorization exactly like any other endpoint for that data
+   - file/image upload work uses the stack's standard recipe (`stacks/<preset>/media.md`): a hand-rolled upload handled through the app server itself (not a presigned URL), missing type/size validation before a presigned URL is issued, or a storage credential embedded in code is a **blocker**, even if it looks correct
 
    If constitution.md §8 declares security level `sensitive-data`, additionally check: no personal details (emails, phones, addresses, names) in logs; API responses use explicit field allowlists with no unneeded personal fields; money amounts are integers in the smallest unit, never floats.
 

@@ -28,11 +28,15 @@ Then two data-sensitivity questions (they set the security level, not the stack)
 
 Any "yes" → security level `sensitive-data` (recorded in Step 5; see constitution §8). Both "no" → `baseline`.
 
+If Q5 was "yes", ask one more outcome question: "จะมีคนอื่นมาลงขายสินค้าในแพลตฟอร์มคุณด้วยไหม หรือคุณเป็นผู้ขายรายเดียว?" (will other people sell through your platform too, or are you the only seller?). If they answer that other sellers will be involved, say so plainly in the Step 6 report: v1's payment recipe (Stripe Checkout, one seller) doesn't yet support splitting payouts across multiple sellers, and a single-seller shop is what gets built today. This is not a block — just setting the right expectation before they build half of something bigger.
+
 If Q5 ("will money move through the app") is "yes", ask one more outcome question before scaffolding: "ลูกค้าจะจ่ายเงินเป็นสกุลไหน?" (what currency will customers pay in) — the answer drives the payment recipe in Step 4. Never ask which payment provider to use; it's locked to Stripe (see `stacks/<preset>/payments.md`).
 
 **Forbidden:** asking the user to name a framework, database, architecture, or payment provider. If they volunteer one, respect it (map to the closest preset); never ask.
 
 ## Step 3 — Summarize and get approval
+
+When run as part of `/founder-rail:start`'s combined onboarding, **skip this gate** — `start.md` collects this summary alongside setup-standards/-design/-structure and asks one combined approval before any of them scaffold. Only run this step's own approval when invoked standalone (a later re-run outside `/start`).
 
 Before scaffolding, tell the user in plain language what will be built and why, based on their answers ("From what you told me, I'll set this up as a single web app that handles both what you see and what happens behind the scenes" or "...as a website plus a separate backend service, because you need [reason]"). Add ⚠️ if a database, login, or payment integration will be wired in. Use AskUserQuestion: approve / adjust. Do not scaffold before approval.
 

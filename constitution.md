@@ -6,7 +6,16 @@
 >
 > (Template note: sections marked `<!-- SETUP:... -->` are filled in by the
 > `setup-techstack`, `setup-standards`, `setup-design`, `setup-structure`,
-> and `setup-deploy` skills when this file is copied into a user's project.)
+> and `setup-deploy` skills when this file is copied into a user's project.
+> A section whose owning skill hasn't run yet **keeps its `<!-- SETUP:X -->`
+> comment block verbatim** — that comment is the resume marker. `start.md`
+> and `next.md` check for any comment still present, not just whether this
+> file exists, before treating setup as done: a session that dies partway
+> through onboarding (e.g. right after tech stack, before standards/design/
+> structure) must resume the remaining skills, not be mistaken for finished.
+> Filling a section means deleting its entire `<!-- SETUP:X ... -->` block
+> and replacing it with the real content — never leaving the comment behind
+> alongside the filled content.)
 
 ## 1. Tech stack
 
@@ -17,6 +26,11 @@ Fill in:
 - Database: whether one was wired in, and where (next-fullstack: project
   root · next-nest: apps/api only, never apps/web)
 - Paths: app root(s); for next-nest, the monorepo layout
+- Staff role: none until a feature needs it. Filled in by `idea-to-spec`/
+  `implement-tdd` the first time a feature installs the "Role ฝั่งร้าน" add-on
+  from `stacks/<preset>/auth.md` — record here: fixed `/staff` prefix, that
+  the founder granted the first `staff` role outside the app (seed/migration,
+  date), and the date installed.
 -->
 
 ## 2. Code standards
@@ -57,6 +71,9 @@ Fill in:
 Fill in (by setup-deploy, which may run later than the other setup skills):
 - Host: which preset (vercel-fullstack | railway-nest) and the plain-language
   reason tied to the user's answers (budget, domain)
+- First launched: `<YYYY-MM-DD>` of the first production deploy — set once,
+  never overwritten by later redeploys (`health-check` uses it to know how
+  recent the launch is)
 - Production URL + custom domain if any
 - Env vars: the list of variable NAMES the app needs in production (never
   values), and where the user manages them (host dashboard)
@@ -126,6 +143,16 @@ on every diff. A concrete violation is a review **blocker**:
    database objects — pick the fields.
 5. **Secrets and passwords never reach logs,** error messages, or API
    responses.
+6. **Stock/quantity decrements are atomic.** Reducing how much of something is
+   left (inventory, limited-quantity items) happens as one conditional
+   operation that checks the remaining count in the same step — never a
+   separate read-then-write — so two customers buying the last item at the
+   same time can't both succeed.
+7. **Order/status transitions are explicit, not a free-set field.** A feature
+   that changes an order's status (pending → paid → shipped →
+   delivered/cancelled, or equivalent) defines which transitions are allowed
+   and checks the current status before changing it — never just assigns a
+   new string.
 
 ### Security level
 

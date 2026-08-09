@@ -30,3 +30,17 @@ npm install next-auth@beta @auth/prisma-adapter resend
 - Abuse-case tests from RED phase: expired/reused magic link rejected, malformed email rejected at the boundary, a protected page without a session redirects (never renders data), one user cannot read another user's rows
 - E2E spec titled as a scenario ("a customer signs in from an email link") — full round-trip in dev can use the provider's dev/test mode or a captured link; never a mocked-out fake that skips Auth.js
 - `npm audit` clean at critical level after the new deps
+
+## Role ฝั่งร้าน (optional add-on)
+
+Only when the project has a "staff sees things customers don't" side — installed lazily by `idea-to-spec` the first feature that needs it, never asked up front at onboarding.
+
+- **Exactly two roles**: `customer` (default, never chosen explicitly) and `staff` — no permission matrix, no multi-tenant orgs, out of v1 scope.
+- **One field**, not a separate authorization system: `role: "customer" | "staff"` (default `"customer"`) added to the Auth.js `User` model.
+- **Fixed prefix `/staff`** for every staff-facing page/route, in every structure preset — it's a routing concern, not a component-architecture concern the structure preset should own.
+- **One central guard**, same pattern as the sign-in check itself: a single middleware/guard checking `role === "staff"` gates everything under `/staff/*` — never a per-page check.
+- **The founder grants the first `staff` role themselves, outside the app** — a one-time seed/migration run when the recipe is first installed, never an in-app "promote to staff" endpoint (that's a privilege-escalation hole). Any later staff additions are the founder's own action (e.g. editing the row directly, or a future feature scoped and reviewed on its own).
+
+## Definition of done — role add-on
+
+Everything above, plus: a customer session hitting any `/staff/*` route is redirected/blocked (never rendered), tested as an abuse case; the first `staff` grant happened outside app code (seed/migration), not through a self-serve endpoint.

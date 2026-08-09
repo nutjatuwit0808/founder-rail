@@ -19,3 +19,11 @@ Sign-in for the monorepo shape: **Auth.js lives in `apps/web`** (same setup as `
 ## Definition of done
 
 Everything in `../next-fullstack/auth.md`, plus: an api request **without** a valid token gets 401 (tested), a token signed with a wrong secret gets 401 (tested), and no endpoint that touches personal data sits outside the guard.
+
+## Role ฝั่งร้าน (optional add-on)
+
+Same locked choices as `../next-fullstack/auth.md` (two roles only, lazy install via `idea-to-spec`, fixed `/staff` prefix, founder grants the first `staff` role outside the app) — mapped to this shape: `role` goes into the JWT claims alongside the user identity, and `apps/api`'s single central guard checks `role === "staff"` for anything under `/staff/*` (both the api routes and the `apps/web` pages that call them), instead of adding a second guard.
+
+## Definition of done — role add-on
+
+Everything in `../next-fullstack/auth.md`'s role add-on section, plus: a valid JWT with `role: "customer"` gets 403 from any `/staff/*` api route (tested), and no `/staff/*` page or endpoint on either side of the boundary skips the role check.

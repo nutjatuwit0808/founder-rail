@@ -8,7 +8,7 @@ Tell the user where they are and what to do next. Everything is derived fresh fr
 
 Then walk this decision tree top-down; the **first true condition is the answer**:
 
-1. No `constitution.md` at the project root → "ยังไม่ได้ตั้งระบบ — เริ่มที่ `/founder-rail:start`"
+1. No `constitution.md` at the project root, **or** it exists but still has any `<!-- SETUP:X ... -->` comment block remaining (grep for `<!-- SETUP:`) → "ยังตั้งระบบไม่เสร็จ — ทำต่อที่ `/founder-rail:start`" (say "ยังไม่ได้ตั้งระบบ" only when the file doesn't exist at all; say "ตั้งค้างไว้กลางทาง" when it exists but is incomplete — either way the one next step is the same command, which resumes rather than restarts)
 2. Any feature `in_progress`/`in_review` → name it + how stale (`updated:`): "งาน *X* ค้างอยู่ — ทำต่อด้วย `/founder-rail:ship` หรือถ้าติดอะไรอยู่เล่ามาได้เลย"
 3. `inbox/` has untriaged files (excluding README) → "มีไอเดียค้าง N เรื่อง — `/founder-rail:idea` เพื่อแปลงเป็นแผน"
 4. Any feature `planned` → "คิวถัดไปคือ *X* — `/founder-rail:ship` เมื่อพร้อม"
