@@ -22,7 +22,7 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 | 4 | Verification never requires the user to read code — automated tests + screenshots are the proof |
 | 5 | Every important output passes through a plain-language layer, with ⚠️ risk indicators for production/payment/data actions |
 | 6 | Plan-then-approve gate before every implementation |
-| + | **Never lost**: every report ends with exactly one next step, wrong-door commands route instead of rejecting, plain words with no command still reach the right flow, and `/founder-rail:next` answers "where am I, what now?" |
+| + | **Never lost**: every report ends with exactly one next step, wrong-door commands route instead of rejecting, plain words with no command still reach the right flow (including a plain "looks good" / "that's not it" on a freshly built feature), and `/founder-rail:next` answers "where am I, what now?" |
 
 ## Install
 
@@ -38,7 +38,7 @@ founder-rail is a Claude Code plugin that puts guard rails around AI-driven deve
 | `/founder-rail:start` | One-time setup: stack, standards, design, structure, quality rails |
 | `/founder-rail:idea` | Turn a plain-language idea into a tracked feature spec (or update an existing feature) |
 | `/founder-rail:status` | Kanban board derived from markdown — what's where |
-| `/founder-rail:ship` | Build the next planned feature through the full quality harness |
+| `/founder-rail:ship` | Build the next planned feature through the full quality harness — or pick an interrupted build back up where it stopped |
 | `/founder-rail:preview` | Open the app locally — link + what to try |
 | `/founder-rail:design` | Set or adjust look & feel from a logo or plain words ("softer", "bigger text") — token-safe, contrast-guarded |
 | `/founder-rail:fix` | Report something broken in plain words → reproduced, regression-tested fix |
@@ -96,7 +96,7 @@ flowchart TD
 
 ### The build harness (`implement-tdd`) in detail
 
-`/founder-rail:ship` runs one feature through seven phases that cannot be skipped:
+`/founder-rail:ship` runs one feature through these phases, none of which can be skipped. An interrupted run resumes from the phase recorded in `STATUS.md` rather than restarting, and a feature only becomes `done` when the user says it's right:
 
 ```mermaid
 flowchart LR
@@ -108,6 +108,8 @@ flowchart LR
     p5 -->|changes requested| p3
     p5 -->|APPROVE| p6[6 · Verify<br/>full suite + screenshots]
     p6 --> p7[7 · Record & report<br/>plain-language result]
+    p7 --> p8[8 · Acceptance<br/>user says it's right → done]
+    p8 -->|spec not met| p2
 ```
 
 ### What each skill does
@@ -118,9 +120,9 @@ flowchart LR
 - **`setup-structure`** — one-time, frontend only. Asks one outcome question (small/demo, growing into several features, or design-heavy UI) and picks `flat`, `feature-based`, or `atomic-design`. Wires import-boundary and naming-convention ESLint rules into the project's existing lint config — riding the `eslint-on-save` hook — and writes section 4 of `constitution.md`.
 - **`idea-to-spec`** — turns a plain-language idea (or an `inbox/` file) into a tracked feature. Asks at most 3 outcome-level questions (never about databases, frameworks, or architecture) and scaffolds `features/<slug>/` with `SPEC.md`, `STATUS.md`, `DECISIONS.md`, and `IMPLEMENTATION.md`. The slug names the *outcome* (`email-signup`), not the tech. If a feature needs sign-in or payment and the project hasn't wired one in yet, it points the plan at the stack's locked recipe (`auth.md` / `payments.md`) instead of deciding fresh each time.
 - **`plan-sprint`** — groups `backlog` features into a simple sprint. Asks one outcome question about what matters most now, respects `blocked_by` order, caps a sprint at 5 items, and marks the chosen features `planned`. No story points or velocity.
-- **`implement-tdd`** — the build harness (diagram above). The only place implementation code is ever written: plan-approval gate → strict RED→GREEN→REFACTOR TDD → fresh-context review → verification → documentation update. Delegates larger builds to the `implementer` agent.
+- **`implement-tdd`** — the build harness (diagram above). The only place implementation code is ever written: plan-approval gate → strict RED→GREEN→REFACTOR TDD → fresh-context review → verification → documentation update → the user's own acceptance. An entry check on `STATUS.md` (`status` + `phase`) decides whether a run is new, a resume of an interrupted build (no restart, no second approval), or an acceptance; a feature becomes `done` only when the user says it's right, and "that's not it" is sorted by the agent into spec-not-met (back into the harness) or a change request (update mode) — the user never classifies it. Delegates larger builds to the `implementer` agent.
 - **`verify-visually`** — for features with a visible UI. Drives the app and captures screenshots via Playwright, checking them against the acceptance criteria and design tokens — proof the user can see without reading code. Part of the harness, not optional.
-- **`render-dashboard`** — the zero-database kanban. Re-reads `features/*/STATUS.md` frontmatter every time (never cached) and renders a text board — Backlog · Planned · In progress · In review · Done — plus one suggested next action.
+- **`render-dashboard`** — the zero-database kanban. Re-reads `features/*/STATUS.md` frontmatter every time (never cached) and renders a text board — Backlog · Planned · In progress · In review · Done — plus one suggested next action (an interrupted build first, then anything waiting for the user's look).
 - **`fix-bug`** — plain-language bug report → reproduce first → failing regression test → fix → fresh review. Never guess-fixes an unreproduced bug; the regression test is permanent.
 - **`setup-deploy`** — first-launch setup. Host derived from the stack (`vercel-fullstack` / `railway-nest`); secret values never pass through the agent — the user enters them in the host dashboard following a plain-language guide.
 - **`undo-feature`** — walks back the most recent shipped feature with `git revert` only (history intact), after explaining the cost in plain language. Conflicts = stop and report, never resolve creatively.

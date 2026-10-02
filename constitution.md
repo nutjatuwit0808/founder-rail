@@ -98,6 +98,9 @@ Fill in (by setup-deploy, which may run later than the other setup skills):
 5. **Every feature is documented** in `features/<slug>/`:
    `SPEC.md` (what & why), `STATUS.md` (where it is), `DECISIONS.md`
    (append-only decision log), `IMPLEMENTATION.md` (plan + touchpoints).
+   A feature is `done` only after the user has tried it and said it's right —
+   until then it waits as `in_review`. An interrupted build is resumed from
+   the `phase` recorded in `STATUS.md`, never restarted.
 6. **No dead ends.** Every user-facing report ends with exactly **one**
    suggested next step (never a menu of options). The user must never be left
    wondering what to do — and `/founder-rail:next` answers "where am I, what

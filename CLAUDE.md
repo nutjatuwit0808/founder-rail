@@ -27,7 +27,7 @@ commands/*.md   →  invoke  →  skills/*/SKILL.md  →  delegate to  →  agen
 - **agents/** — `implementer` (writes code strictly by TDD) and `fresh-reviewer` (reviews a diff with **zero** implementation history — launched with only the diff, `SPEC.md`, and `constitution.md`).
 - **hooks/** — shell scripts wired by `hooks/hooks.json`; the enforcement layer. See below.
 
-`implement-tdd` is the spine: Phase 0 plan-approval gate → RED → GREEN → REFACTOR → fresh review → verify → record. Implementation code must never be written outside this flow.
+`implement-tdd` is the spine: Phase 0 plan-approval gate → RED → GREEN → REFACTOR → fresh review → verify → record → user acceptance. An Entry check on `STATUS.md` decides new run vs resume vs acceptance. Implementation code must never be written outside this flow.
 
 ## The six non-negotiable principles
 
@@ -86,7 +86,7 @@ echo '{"tool_input":{"command":"npx prisma migrate reset"}}' | sh hooks/db-dange
 Each feature in a user's project is a folder `features/<slug>/` (slug names the **outcome**, e.g. `email-signup`, never the tech). Four files, created by `idea-to-spec`:
 
 - `SPEC.md` — what & why; acceptance criteria phrased so a non-technical person can check them by *using* the app.
-- `STATUS.md` — YAML frontmatter is the database: `feature, title, status, sprint, blocked_by, created, updated`. Status values: `backlog → planned → in_progress → in_review → done` (plus `blocked`).
+- `STATUS.md` — YAML frontmatter is the database: `feature, title, status, phase, sprint, blocked_by, created, updated`. Status values: `backlog → planned → in_progress → in_review → done` (plus `blocked`). `phase` is set only by `implement-tdd` while `in_progress` (`plan-approved → red → green → refactor → review → verify`) so `/founder-rail:ship` resumes an interrupted build instead of restarting; `in_review → done` happens only on the user's own verdict (`implement-tdd` Phase 8, Acceptance).
 - `DECISIONS.md` — **append-only** decision log; never rewrite past entries.
 - `IMPLEMENTATION.md` — approved plan + touchpoints (files/functions changed).
 

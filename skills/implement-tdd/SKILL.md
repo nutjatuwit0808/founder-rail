@@ -7,6 +7,14 @@ description: The build harness - implements one feature spec end-to-end with a p
 
 Work on exactly one feature per run. Input: the feature slug.
 
+## Entry check — new run, resume, or acceptance?
+
+Read `features/<slug>/STATUS.md` first; the `status` and `phase` fields decide where this run starts. A session can die at any point, and the founder cannot tell "half-built" from "finished" — so the files say where the work stands, never memory.
+
+- `planned` (or `backlog`) → a new run: start at Phase 0.
+- `in_progress` → **resume**, don't restart. The plan in `IMPLEMENTATION.md` `## Plan` was already approved (`phase` is `plan-approved` or later) — do not ask for approval again and do not rewrite it. Treat `phase` as a hint and verify it against reality: re-enter the feature's worktree if it still exists, run the suite, and check which planned tests exist and whether they pass. Continue from the earliest phase whose work isn't actually finished (e.g. `phase: green` but planned tests still fail → continue GREEN). Tell the user in one plain-language line what was already done and where you're picking up ("งาน *X* ค้างไว้ตอนกำลังสร้าง — เขียนชุดทดสอบไว้แล้ว ผมทำต่อจากตรงนั้นเลย" style). Only if `phase` is empty or `## Plan` is missing was the plan never approved — then start at Phase 0.
+- `in_review` → the build is finished and waiting for the user: go straight to Phase 8 (Acceptance). Never rebuild it.
+
 ## Phase 0 — Plan gate (MANDATORY — no code before approval)
 
 1. Read `features/<slug>/SPEC.md`, `constitution.md`, and `features/<slug>/DECISIONS.md`. If SPEC.md has unresolved Open questions, resolve them with the user first (outcome-level questions only).
@@ -22,7 +30,9 @@ Work on exactly one feature per run. Input: the feature slug.
 
 ## Phase 1 — Isolate
 
-If the project is a git repo, work in an isolated worktree (EnterWorktree) so the user's working copy stays intact; merge back only after review passes. Set `STATUS.md` → `status: in_progress`, `updated: <today>`.
+If the project is a git repo, work in an isolated worktree (EnterWorktree) so the user's working copy stays intact; merge back only after review passes. Set `STATUS.md` → `status: in_progress`, `phase: plan-approved`, `updated: <today>`.
+
+From here on, update `phase` in `STATUS.md` each time a phase **completes** — `red` → `green` → `refactor` → `review` → `verify` — so an interrupted run can be resumed by the Entry check instead of restarted.
 
 Before writing any file, check `constitution.md` §4 (Code structure) for the project's structure preset, then copy the matching `scaffold/` template from `${CLAUDE_PLUGIN_ROOT}/structure/<preset>/scaffold/` for each new component the plan calls for, renaming it into place. This keeps new files where the preset's import-boundary rules expect them, instead of the boundaries hook catching a misplaced file after the fact.
 
@@ -60,8 +70,18 @@ If the feature added or updated dependencies, run `npm audit --audit-level=criti
 
 - `IMPLEMENTATION.md` → `## Touchpoints`: every file/function created or changed, one line each.
 - `DECISIONS.md`: append significant choices (date, decision, why, plain-language impact). Append-only — never rewrite old entries.
-- `STATUS.md` → `in_review` while awaiting the user's acceptance; `done` after they accept.
-- Report in plain language (user's language): what works now, exact steps for the user to see it themselves (what to run/click), test results as pass counts, and any ⚠️ items. If the project has been launched before (constitution has a Deployment section), close by pointing to `/founder-rail:launch` to put this in front of real users.
+- `STATUS.md` → `status: in_review`, `phase: null`, `updated: <today>` — built and checked, waiting for the user's own look.
+- Report in plain language (user's language): what works now, exact steps for the user to see it themselves (what to run/click), test results as pass counts, and any ⚠️ items. Close with exactly one next step — the acceptance ask: "ลองใช้ดูแล้วบอกผมได้เลยว่าใช้ได้ หรือมีตรงไหนยังไม่ใช่" style. Don't point to `/founder-rail:launch` yet; that comes after they accept.
+
+## Phase 8 — Acceptance (the user's own verdict)
+
+A feature is `done` only when the user says so — passing tests prove the spec was met, not that the spec was what they meant. This phase runs whenever the user reacts to an `in_review` feature, in any words and in any later session (the front desk routes "looks good" / "that's not it" here; `/founder-rail:ship` and `/founder-rail:next` bring it up while something is waiting). If more than one feature is `in_review` and their words don't make clear which, ask which one by plain title.
+
+- **They accept** ("ใช้ได้", "โอเค", "ผ่าน"): `STATUS.md` → `status: done`, `updated: <today>`; append to `DECISIONS.md`: date, "accepted by the user". Confirm in one line, then exactly one next step: `/founder-rail:launch` if the project has been launched before (constitution has a filled Deployment section), otherwise the next planned feature via `/founder-rail:ship` — or `/founder-rail:idea` if nothing is queued.
+- **They haven't tried it yet**: nothing changes. Offer `/founder-rail:preview` so they can.
+- **Something isn't right**: decide which case it is yourself — never make the user classify it.
+  - *An acceptance criterion in SPEC.md isn't actually met* (the build missed it): the promise is broken, so the feature goes back into this harness — `status: in_progress`, `phase: plan-approved` — and Phase 2 starts with a failing test that reproduces what they saw. The approved plan still stands; return to the plan gate only if the fix changes what was approved.
+  - *It does what the spec says, but they want it different*: accept it as built (`done`, noting in `DECISIONS.md` that a change was requested), then hand their words to `idea-to-spec` update mode — the change gets its own plan gate rather than being slipped in unreviewed.
 
 ## Hard rules
 

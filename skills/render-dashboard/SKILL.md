@@ -14,7 +14,7 @@ The markdown files ARE the database. Always re-read them; never answer from memo
 5. Below the board add:
    - Current sprint contents in build order
    - Counts per column + untriaged inbox count
-   - Exactly ONE suggested next action, e.g. "`/founder-rail:ship` to build *Email signup*" or "`/founder-rail:idea` — the board is empty, add your first idea"
+   - Exactly ONE suggested next action, chosen in the same order `/founder-rail:next` uses: an interrupted 🔨 item → "`/founder-rail:ship` to pick *X* back up"; else a 👀 item → "try *X* and tell me if it's right" (it waits on the user, not on a build); else e.g. "`/founder-rail:ship` to build *Email signup*" or "`/founder-rail:idea` — the board is empty, add your first idea"
 6. Everything in plain language, in the user's language.
 
 v1 is chat-only: do not generate an HTML dashboard unless the user explicitly asks.
