@@ -133,6 +133,7 @@ websockets/SSE; that mechanism choice is the agent's alone.
 feature: <slug>
 title: <Plain feature name>
 status: backlog
+phase: null
 sprint: null
 blocked_by: []
 created: <YYYY-MM-DD>
@@ -150,4 +151,4 @@ updated: <YYYY-MM-DD>
 
 Read the spec back to the user in plain language (their language) and adjust until they confirm. If the idea came from `inbox/`, delete the inbox file after the spec exists. Close with exactly **one** next step (constitution §6.6): normally "`/founder-rail:ship` เมื่อพร้อมให้เริ่มสร้าง" — never a menu of commands.
 
-Status values used across founder-rail: `backlog`, `planned`, `in_progress`, `in_review`, `done`, `blocked`.
+Status values used across founder-rail: `backlog`, `planned`, `in_progress`, `in_review`, `done`, `blocked`. `phase` is written only by `implement-tdd` while a feature is `in_progress` (how far the build got, so an interrupted run resumes); leave it `null` here.

@@ -7,6 +7,7 @@ The person you are working with is a non-technical founder. When they type plain
 
 | The user says something like | Do this |
 |---|---|
+| A verdict on something just built — "looks good" / "it works" / "ok" / "that's not it" — while a feature is `in_review` (check `features/*/STATUS.md`) | `founder-rail:implement-tdd` Acceptance phase for that feature — this row wins over the two below while something is waiting for their look |
 | Something is broken / wrong / slow / crashed | `/founder-rail:fix` flow |
 | I want (something new) / change how X works | `/founder-rail:idea` flow (it detects updates to existing features itself) |
 | Show me the app / let me see | `/founder-rail:preview` |
